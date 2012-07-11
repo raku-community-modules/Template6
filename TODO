@@ -20,6 +20,7 @@ Medium term goals
 * Capture of directive output.
 * Multiple directive blocks.
 * Filters.
+* Alternative Parser using Perl 6 Closures instead of Eval.
 
 Long term goals
 
