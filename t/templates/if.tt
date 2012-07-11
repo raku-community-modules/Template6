@@ -1,0 +1,35 @@
+<html>
+<head>
+<title>If Test</title>
+</head>
+<body>
+[% if shouldbetrue %]
+<p>This is true</p>
+[% end %]
+[% if ! shouldbefalse %]
+<p>As is this</p>
+[% end %]
+[% if astring eq 'A string' %]
+<p>And the string matches</p>
+[% else %]
+<p>This else should not show up</p>
+[% end %]
+[% if shouldbefalse %]
+<p>This if statement should not show up</p>
+[% else %]
+<p>The else worked properly</p>
+[% end %]
+[% if anumber < 5 %]
+<p>This number test should not show up.</p>
+[% elsif anumber < 10 %]
+<p>Elseif worked</p>
+[% else %]
+<p>This else should not be caught</p>
+[% end %]
+[% unless anumber > 5 %]
+<p>Unless works</p>
+[% else %]
+<p>What the heck?</p>
+[% end %]
+</body>
+</html>

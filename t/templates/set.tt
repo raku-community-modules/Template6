@@ -1,0 +1,10 @@
+<html>
+<head>
+[% set title = 'Hello World' %]
+<title>[% title %]</title>
+</head>
+<body>
+[% name = title %]
+<h1>[% name %]</h1>
+</body>
+</html>

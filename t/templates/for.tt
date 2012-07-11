@@ -1,0 +1,17 @@
+<html>
+<head>
+<title>[% title %]</title>
+</head>
+<body>
+<ul>
+[% for li in ul %]
+<li>[% li %]</li>
+[% end %]
+</ul>
+<ol>
+[% for ol as li %]
+<li>[% li %]</li>
+[% end %]
+</ol>
+</body>
+</html>

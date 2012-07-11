@@ -14,7 +14,8 @@ method get ($query) {
   if %!data.exists($query) {
     return %!data{$query};
   }
-  return;
+  ## If nothing was found, we return the original query.
+  return $query;
 }
 
 method update (*%hash) {
