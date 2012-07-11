@@ -83,11 +83,20 @@ method action ($statement) {
   }
 }
 
-method compile ($template is copy) {
-  my $script = "return sub (\$context) \{ my \$stash = \$context.stash;\nmy \$output = \"";
-  $template ~~ s:g/\n?'[%' \s* (.*?) \s* '%]'/";\n{self.action($0)}\n\$output ~= "/;
-  $script ~= $template;
-  $script ~= "\";\nreturn \$output;\n\}";
+method compile ($template) {
+  my $script = "return sub (\$context) \{\n my \$stash = \$context.stash;\nmy \$output = '';\n";
+  my @segments = $template.split(/\n?'[%' \s* (.*?) \s* '%]'/, :all);
+  for @segments -> $segment {
+    if $segment ~~ Stringy {
+      my $string = $segment.subst('}}}}', '\}\}\}\}', :g);
+      $script ~= "\$output ~= Q\{\{\{\{$string\}\}\}\};\n";
+    }
+    elsif $segment ~~ Match {
+      my $statement = ~$segment[0];
+      $script ~= self.action($statement);
+    }
+  }
+  $script ~= "return \$output;\n\}";
 #  $*ERR.say: "<DEBUG:template>\n$script\n</DEBUG:template>";
   my $function = eval $script;
   return $function;
