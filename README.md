@@ -13,20 +13,25 @@ my own Flower and Garden projects.
 
 ## Currently implemented features
 
-*   get and set statements, including implicit versions.
-    [% get varname %]
-    [% varname %]
-    [% set varname = value %]
-    [% varname = value %]
-*   for statement.
-    This replaces the FOREACH statement in TT2.
-    It can be used in one of four ways:
-    [% for listname as itemname %]
-    [% for listname -> itemname %]
-    [% for itemname in listname %]
-    [% for itemname = listname %]
-*   if/elsif/else/unless statements.
-    These as very simplistic at the moment.
+*    get and set statements, including implicit versions.
+
+     * [% get varname %]
+     * [% varname %]
+     * [% set varname = value %]
+     * [% varname = value %]
+
+*    for statement.
+
+     This replaces the FOREACH statement in TT2.
+     It can be used in one of four ways:
+     * [% for listname as itemname %]
+     *[% for listname -> itemname %]
+     * [% for itemname in listname %]
+     * [% for itemname = listname %]
+
+*    if/elsif/else/unless statements.
+
+     These as very simplistic at the moment.
   
 ## Author
 
