@@ -26,4 +26,9 @@ my own Flower and Garden projects.
     [% for listname -> itemname %]
     [% for itemname in listname %]
     [% for itemname = listname %]
+* if/elsif/else/unless statements.
+  These as very simplistic at the moment.
+  
+Author: Timothy Totten
+License: Artistic License 2.0
 
