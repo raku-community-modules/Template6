@@ -1,16 +1,14 @@
-NanoTT: A Template Engine for Perl 6
+Template6: A Template Engine for Perl 6
 ---------------------------------------
 
-Inspired by Template Toolkit and TT3 from Perl 5,
-NanoTT is a simple template engine designed to be
-easy to use and more generic than my previous Flower
-and Garden engines.
+Inspired by Template Toolkit from Perl 5,
+Template6 is a simple template engine designed to be
+a content-neutral template language.
 
-Unlike Flower, it works with any form of textual content,
-and unlike Garden, well, it's a sane design.
+Eventually, I intend for this to be as powerful as
+Template Toolkit, but for now I'm keeping it simple
+and leaving it capable of easily adding new functionality.
 
-More to come soon as I plan out exactly what form this
-engine is going to take. Unlike Garden, I'm not planning
-this to be multi-language. If you're using Perl 5, use one of
-the existing engines like Template Toolkit. This is for Perl 6 only.
+I also intend to borrow features and ideas from
+my own Flower and Garden projects.
 
