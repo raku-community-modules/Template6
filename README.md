@@ -25,7 +25,7 @@ my own Flower and Garden projects.
      This replaces the FOREACH statement in TT2.
      It can be used in one of four ways:
      * [% for listname as itemname %]
-     *[% for listname -> itemname %]
+     * [% for listname -> itemname %]
      * [% for itemname in listname %]
      * [% for itemname = listname %]
 
