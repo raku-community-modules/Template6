@@ -1,5 +1,4 @@
-Template6: A Template Engine for Perl 6
----------------------------------------
+# Template6: A Template Engine for Perl 6 #
 
 Inspired by Template Toolkit from Perl 5,
 Template6 is a simple template engine designed to be
@@ -12,7 +11,7 @@ and leaving it capable of easily adding new functionality.
 I also intend to borrow features and ideas from
 my own Flower and Garden projects.
 
-== Currently implemented features ==
+## Currently implemented features
 
 * get and set statements, including implicit versions.
   [% get varname %]
@@ -29,6 +28,11 @@ my own Flower and Garden projects.
 * if/elsif/else/unless statements.
   These as very simplistic at the moment.
   
-Author: Timothy Totten
-License: Artistic License 2.0
+## Author
+
+This was build by Timothy Totten. You can find me on #perl6 with the nickname supernovus.
+
+## License
+
+Artistic License 2.0
 
