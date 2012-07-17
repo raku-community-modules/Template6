@@ -36,7 +36,7 @@ method lookup (@query is rw, $data) {
   return;
 }
 
-method get ($query) {
+method get ($query, :$strict) {
   if %!data.exists($query) {
     return %!data{$query};
   }
@@ -47,7 +47,10 @@ method get ($query) {
       return $value;
     }
   }
-  ## If nothing was found, we return the original query.
+  if $strict {
+    return;
+  }
+  ## If nothing was found, and we're not in strict mode, we return the original query.
   return $query;
 }
 

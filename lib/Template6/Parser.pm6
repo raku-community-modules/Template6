@@ -8,15 +8,41 @@ method parse-get ($name) {
   return "\$output ~= \$stash.get('$name');";
 }
 
-method parse-set ($name, $op, $value) {
-  if ($value ~~ /\"(.*?)\"|\'(.*?)\'/) {
-    my $string = ~$0;
-    return "\$stash.put('$name', '$string');";
+method parse-call ($name) {
+  return "\$stash.get('$name');";
+}
+
+method parse-set (:$default, *@values is copy) {
+  my $return = '';
+  while @values.elems >= 3 {
+    my $name = @values.shift;
+    my $op   = @values.shift;
+    my $value = @values.shift;
+    if $default {
+      $return ~= "if ! \$stash.get('$name', :strict) \{\n";
+    }
+    if ($value ~~ /\"(.*?)\"|\'(.*?)\'/) {
+      my $string = ~$0;
+      $return ~= "\$stash.put('$name', '$string');\n";
+    }
+    elsif ($value ~~ /^\d+[\.\d+]?$/)
+    {
+      my $number = +$value;
+      $return ~= "\$stash.put('$name', $number);\n";
+    }
+    else
+    {
+      $return ~= "\$stash.put('$name', \$stash.get('$value'));\n";
+    }
+    if $default {
+      $return ~= "}\n";
+    }
   }
-  else
-  {
-    return "\$stash.put('$name', \$stash.get('$value'));";
-  }
+  return $return;
+}
+
+method parse-default (*@values) {
+  return self.parse-set(:default, @values);
 }
 
 method parse-for ($left, $op, $right) {

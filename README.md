@@ -35,12 +35,12 @@ my own Flower and Garden projects.
      These are very simplistic at the moment, but work for basic tests.
 
 *    Querying nested data structures using a simple dot operator syntax.
+*    call and default statements.
 
 ## TODO
 
 ### Short Term Goals
 
- * call and default statements
  * insert, include, process and wrapper statements
  * block statements
  * given/when statements
@@ -50,11 +50,11 @@ my own Flower and Garden projects.
  * Whitespace control
  * Precompiled/cached templates
  * Tag styles (limited to definable start_tag and end_tag)
- * Capture of directive output
  * Filters
 
 ### Long Term Goals
 
+ * Capture of directive output
  * Directive comments
  * Side-effect notation
  * Multiple directives in a single statement tag set
