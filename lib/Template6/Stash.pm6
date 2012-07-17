@@ -9,10 +9,43 @@ method put ($key, $value) {
   %!data{$key} = $value;
 }
 
+method lookup (@query is rw, $data) {
+  my $element = @query.shift;
+  my $found;
+  if $data ~~ Hash {
+    if $data.exists($element) {
+      $found = $data{$element};
+    }
+  }
+  elsif $data ~~ Array && $element ~~ /^\d+$/ {
+    if $data.elems >= $element {
+      $found = $data[$element];
+    }
+  }
+  elsif $data.can($element) {
+    $found = $data."$element"();
+  }
+  if $found.defined {
+    if @query.elems > 0 {
+      return self.lookup(@query, $found);
+    }
+    else {
+      return $found;
+    }
+  }
+  return;
+}
+
 method get ($query) {
-  ## TODO: Advanced queries.
   if %!data.exists($query) {
     return %!data{$query};
+  }
+  elsif ($query ~~ /\./) {
+    my @query = $query.split('.');
+    my $value = self.lookup(@query, %!data);
+    if ($value.defined) {
+      return $value;
+    }
   }
   ## If nothing was found, we return the original query.
   return $query;

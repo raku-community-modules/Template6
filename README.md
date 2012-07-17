@@ -28,11 +28,43 @@ my own Flower and Garden projects.
      * [% for listname -> itemname %]
      * [% for itemname in listname %]
      * [% for itemname = listname %]
+     If used with Hashes, you'll need to query the .key or .value accessors.
 
 *    if/elsif/else/unless statements.
 
-     These as very simplistic at the moment.
-  
+     These are very simplistic at the moment, but work for basic tests.
+
+*    Querying nested data structures using a simple dot operator syntax.
+
+## TODO
+
+### Short Term Goals
+
+ * call and default statements
+ * insert, include, process and wrapper statements
+ * block statements
+ * given/when statements
+
+### Medium Term Goals
+
+ * Whitespace control
+ * Precompiled/cached templates
+ * Tag styles (limited to definable start_tag and end_tag)
+ * Capture of directive output
+ * Filters
+
+### Long Term Goals
+
+ * Directive comments
+ * Side-effect notation
+ * Multiple directives in a single statement tag set
+
+## Possible future directions
+
+I would also like to investigate the potential for an alternative to Template6::Parser that
+generates Perl 6 closures without the use of eval. This would be far trickier, and would not
+be compatible with the precompiled templates, but would be an interesting exercise nonetheless.
+
 ## Author
 
 This was build by Timothy Totten. You can find me on #perl6 with the nickname supernovus.

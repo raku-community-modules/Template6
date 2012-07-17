@@ -1,0 +1,19 @@
+<html>
+<head>
+<title>[% title %]</title>
+</head>
+<body>
+<table>
+<tr>
+<th>Email</th>
+<th>Age</th>
+</tr>
+[% for item in users %]
+<tr>
+<td>[% item.key %]</td>
+<td>[% item.value %]</td>
+</tr>
+[% end %]
+</table>
+</body>
+</html>

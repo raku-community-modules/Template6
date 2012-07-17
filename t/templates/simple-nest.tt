@@ -1,0 +1,21 @@
+<html>
+<head>
+<title>Nesting Test</title>
+</head>
+<body>
+<table>
+<tr>
+<th>User</th>
+<th>Age</th>
+<th>Job</th>
+</tr>
+[% for users as user %]
+<tr>
+<td>[% user.name %]</td>
+<td>[% user.age %]</td>
+<td>[% user.job %]</td>
+</tr>
+[% end %]
+</table>
+</body>
+</html>
