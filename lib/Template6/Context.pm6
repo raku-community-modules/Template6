@@ -6,9 +6,9 @@ use Template6::Parser;
 use Template6::Stash;
 use Template6::Provider::File;
 
-has $.service;
-has $.parser;
-has $.stash;
+has $.service;        ## The parent Service object.
+has $.parser;         ## Our Parser object.
+has $.stash is rw;    ## Our Stash object.
 
 has %.blocks is rw;   ## Currently known blocks.
 has @.block-cache;    ## Known block tree (for nested contexts.)
@@ -60,8 +60,28 @@ method set-extension ($ext) {
   }
 }
 
-method get-template ($name) {
-  my $shortname = $name;
+method get-template-text ($name is copy) {
+  my $prefix;
+  my @providers;
+  if $name ~~ s/^(\w+)'::'// {
+    $prefix = $0;
+  }
+
+  if $prefix.defined && %!providers.exists{$prefix} {
+    @providers = %!providers{$prefix};
+  }
+  else {
+    @providers = @(%!providers.values);
+  }
+  my $template;
+  for @providers -> $provider {
+    $template = $provider.fetch($name);
+    if $template.defined { last; }
+  }
+  return $template;
+}
+
+method get-template-block ($name) {
   if %.blocks.exists($name) {
    return %.blocks{$name};
   }
@@ -70,23 +90,9 @@ method get-template ($name) {
       return $known-blocks{$name};
     }
   }
-  my $prefix;
-  my @providers;
-  if $shortname ~~ s/^(\w+)'::'// {
-    $prefix = $0;
-  }
 
-  if $prefix.defined && %!providers.exists{$prefix} {
-    @providers = %!providers{$prefix};
-  }
-  else {
-    @providers = %!providers.values;
-  }
-  my $template;
-  for @providers -> $provider {
-    $template = $provider.fetch($shortname);
-    if $template.defined { last; }
-  }
+  my $template = self.get-template-text($name);
+
   ## If we have a template, store it.
   if $template.defined {
     if ($template !~~ Callable) {
@@ -100,7 +106,7 @@ method get-template ($name) {
 method process ($name, :$localise=False, *%params) {
   my $template = $name;
   if $template ~~ Str {
-    $template = self.get-template($template);
+    $template = self.get-template-block($template);
     if !$template.defined { die "Invalid template '$name'"; }
   }
   if $localise {
@@ -121,7 +127,7 @@ method process ($name, :$localise=False, *%params) {
 }
 
 method localise (*%params) {
-  $.stash = $.stash.make-clone(%params);
+  $.stash = $.stash.make-clone(|%params);
 }
 
 method delocalise {

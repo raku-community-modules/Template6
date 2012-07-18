@@ -1,0 +1,9 @@
+<html>
+<head>
+<title>Hello [% name %]</title>
+</head>
+<body>
+[% PROCESS "processed" %]
+<h2>That's right, it changed to [% name %]</h2>
+</body>
+</html>

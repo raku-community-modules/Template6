@@ -1,0 +1,8 @@
+<html>
+<head>
+<title>Hello World</title>
+</head>
+<body>
+[% INCLUDE "included" name = "World" %]
+</body>
+</html>

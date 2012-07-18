@@ -4,46 +4,62 @@ Inspired by Template Toolkit from Perl 5,
 Template6 is a simple template engine designed to be
 a content-neutral template language.
 
-Eventually, I intend for this to be as powerful as
-Template Toolkit, but for now I'm keeping it simple
-and leaving it capable of easily adding new functionality.
-
 I also intend to borrow features and ideas from
 my own Flower and Garden projects.
 
+This project does not intend to create an exact clone of
+Template Toolkit. Some features from TT are not planned for
+inclusion, and likewise, some feature will be included that
+are not in TT. Not all features will work the same either.
+
 ## Currently implemented features
 
-*    get and set statements, including implicit versions.
+*    GET and SET statements, including implicit versions.
 
      * [% get varname %]
      * [% varname %]
      * [% set varname = value %]
      * [% varname = value %]
 
-*    for statement.
+*    FOR statement.
 
      This replaces the FOREACH statement in TT2.
      It can be used in one of four ways:
+
      * [% for listname as itemname %]
      * [% for listname -> itemname %]
      * [% for itemname in listname %]
      * [% for itemname = listname %]
+
      If used with Hashes, you'll need to query the .key or .value accessors.
 
-*    if/elsif/else/unless statements.
+*    IF/ELSIF/ELSE/UNLESS statements.
 
      These are very simplistic at the moment, but work for basic tests.
 
 *    Querying nested data structures using a simple dot operator syntax.
-*    call and default statements.
+*    CALL and DEFAULT statements.
+
+## Differences with Template Toolkit
+
+ * You should use explicit quotes, including in INSERT/INCLUDE/PROCESS directives.
+ * All statement directives are case insensitive.
+ * There are no plans for the INTERPOLATE option/style.
+ * Anything not yet implemented (see TODO below.)
+
+## Caveats
+
+ * Whitespace control is not implemented, so some things are fairly odd. See TODO.
+ * A lot of little nit-picky stuff, likely related to the whitespace issue.
 
 ## TODO
 
 ### Short Term Goals
 
- * insert, include, process and wrapper statements
+ * WRAPPER statement
  * block statements
  * given/when statements
+ * Add 'absolute' and 'relative' options to Template6::Provider::File
 
 ### Medium Term Goals
 
@@ -54,6 +70,7 @@ my own Flower and Garden projects.
 
 ### Long Term Goals
 
+ * Variable interpolation (in strings, variable names, etc.)
  * Capture of directive output
  * Directive comments
  * Side-effect notation
