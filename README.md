@@ -61,21 +61,19 @@ are not in TT. Not all features will work the same either.
  * block statements
  * given/when statements
  * Add 'absolute' and 'relative' options to Template6::Provider::File
-
-### Medium Term Goals
-
  * Whitespace control
  * Precompiled/cached templates
  * Tag styles (limited to definable start_tag and end_tag)
- * Filters
 
 ### Long Term Goals
 
+ * Filters
  * Variable interpolation (in strings, variable names, etc.)
  * Capture of directive output
  * Directive comments
  * Side-effect notation
  * Multiple directives in a single statement tag set
+ * Macros, plugins, etc.
 
 ## Possible future directions
 
