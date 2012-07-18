@@ -39,6 +39,7 @@ are not in TT. Not all features will work the same either.
 
 *    Querying nested data structures using a simple dot operator syntax.
 *    CALL and DEFAULT statements.
+*    INSERT, INCLUDE and PROCESS statements.
 
 ## Differences with Template Toolkit
 
