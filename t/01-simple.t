@@ -1,6 +1,6 @@
 use v6;
 
-BEGIN { @*INC.unshift: './lib'; }
+#BEGIN { @*INC.unshift: './lib'; }
 
 use Test;
 use Template6;
