@@ -69,7 +69,7 @@ class CompanyUser {
     ## A real application would use today, but our test is hard coded.
     #my $now = Date.today;  
     my $now = Date.new('2012-07-17');
-    return ((Date.today - $.birthday) / 365).Int;
+    return (($now - $.birthday) / 365).Int;
   }
 }
 
