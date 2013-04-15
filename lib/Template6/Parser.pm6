@@ -130,7 +130,7 @@ method !parse-conditional ($name, @stmts is copy) {
   for @stmts -> $stmt is rw {
     if @!keywords.grep($stmt) { next; }
     if $stmt ~~ /^\d+$/ { next; }
-    $stmt ~~ s/^(\w+)$/\$stash.get('$0')/;
+    $stmt .= subst(/^(\w+)$/, -> $word { "\$stash.get('$word')" });
   }
   my $statement = @stmts.join(' ');
   my $function = "if $statement \{\n";
