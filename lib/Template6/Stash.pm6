@@ -13,7 +13,7 @@ method lookup (@query is rw, $data) {
   my $element = @query.shift;
   my $found;
   if $data ~~ Hash {
-    if $data.exists($element) {
+    if $data{$element} :exists {
       $found = $data{$element};
     }
   }
@@ -37,7 +37,7 @@ method lookup (@query is rw, $data) {
 }
 
 method get ($query, :$strict) {
-  if %!data.exists($query) {
+  if %!data{$query} :exists {
     return %!data{$query};
   }
   elsif ($query ~~ /\./) {

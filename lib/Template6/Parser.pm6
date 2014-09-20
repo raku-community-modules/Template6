@@ -193,7 +193,7 @@ method compile ($template) {
   }
   $script ~= "return \$output;\n\}";
 #  $*ERR.say: "<DEBUG:template>\n$script\n</DEBUG:template>";
-  my $function = eval $script;
+  my $function = EVAL $script;
   return $function;
 }
 

@@ -15,12 +15,12 @@ submethod BUILD (*%args) {
     $!context = %args<context>;
   }
   else {
-    if (!%args.exists('service')) {
+    unless %args<service> :exists {
       %args<service> = self;
     }
     $!context = Template6::Context.new(|%args);
   }
-  if %args.exists('reset') {
+  if %args<reset> :exists {
     $!reset = %args<reset>;
   }
 }

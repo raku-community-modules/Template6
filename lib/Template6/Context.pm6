@@ -24,7 +24,7 @@ has %.providers;      ## Providers for templates, based on prefix names.
 
 submethod BUILD (*%args) {
   $!service = %args<service>;
-  if (!%args.exists('context')) {
+  unless %args<context> :exists {
     %args<context> = self;
   }
   if (%args<parser>) {
@@ -49,13 +49,13 @@ method add-provider ($name, $object) {
 ## A couple of helper methods for the default provider.
 
 method add-path ($path) {
-  if %!providers.exists('file') {
+  if %!providers<file> :exists {
     %!providers<file>.add-path($path);
   }
 }
 
 method set-extension ($ext) {
-  if %!providers.exists('file') {
+  if %!providers<file> :exists {
     %!providers<file>.ext = $ext;
   }
 }
@@ -67,7 +67,7 @@ method get-template-text ($name is copy) {
     $prefix = $0;
   }
 
-  if $prefix.defined && %!providers.exists{$prefix} {
+  if $prefix.defined && (%!providers{$prefix} :exists) {
     @providers = %!providers{$prefix};
   }
   else {
@@ -82,11 +82,11 @@ method get-template-text ($name is copy) {
 }
 
 method get-template-block ($name) {
-  if %.blocks.exists($name) {
+  if %.blocks{$name} :exists {
    return %.blocks{$name};
   }
   for @.block-cache -> $known-blocks {
-    if $known-blocks.exists($name) {
+    if $known-blocks{$name} :exists {
       return $known-blocks{$name};
     }
   }
