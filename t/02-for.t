@@ -61,12 +61,12 @@ $wanted = "<html>
 </html>
 ";
 
-my %users = 
-{ 
+my %users = %(
+ 
   'bob@smith.com'        => 27,
   'lisa@abbot.org'       => 18,
   'melissa@senstry.com' => 31,
-};
+);
 
 is $t6.process('for-hash', :title<For Hash Test>, :users(%users)), $wanted, 'For statement with hash.';
 
