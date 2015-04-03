@@ -2,6 +2,14 @@
   "name"        : "Template6",
   "version"     : "*",
   "description" : "A template engine inspired by TT.",
+  "provides": {
+    "Template6"                    : "lib/Template6.pm6",
+    "Template6::Parser"            : "lib/Template6/Parser.pm6",
+    "Template6::Service"           : "lib/Template6/Service.pm6",
+    "Template6::Context"           : "lib/Template6/Context.pm6",
+    "Template6::Stash"             : "lib/Template6/Stash.pm6",
+    "Template6::Provider::File"    : "lib/Template6/Provider/File.pm6"
+  },
   "depends"     : [ ],
   "source-url"  : "git://github.com/supernovus/template6.git"
 }
