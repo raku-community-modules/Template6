@@ -1,6 +1,6 @@
 use v6;
 
-class Template6::Stash;
+unit class Template6::Stash;
 
 has $.parent is rw;   ## Only used for cloning.
 has %!data;           ## Stores the actual variables.

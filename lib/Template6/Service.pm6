@@ -1,6 +1,6 @@
 use v6;
 
-class Template6::Service;
+unit class Template6::Service;
 
 use Template6::Context;
 
