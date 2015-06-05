@@ -1,6 +1,6 @@
 use v6;
 
-class Template6::Parser;
+unit class Template6::Parser;
 
 has @!keywords = 'eq', 'ne', 'lt', 'gt', 'gte', 'lte';
 has $.context;

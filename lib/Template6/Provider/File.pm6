@@ -1,6 +1,6 @@
 use v6;
 
-class Template6::Provider::File;
+unit class Template6::Provider::File;
 
 has @.include-path;
 has %.templates;

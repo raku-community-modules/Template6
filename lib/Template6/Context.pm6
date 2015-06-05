@@ -1,6 +1,6 @@
 use v6;
 
-class Template6::Context;
+unit class Template6::Context;
 
 use Template6::Parser;
 use Template6::Stash;
