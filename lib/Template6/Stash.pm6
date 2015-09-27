@@ -9,7 +9,7 @@ method put ($key, $value) {
   %!data{$key} = $value;
 }
 
-method lookup (@query is rw, $data) {
+method lookup (@query, $data) {
   my $element = @query.shift;
   my $found;
   if $data ~~ Hash {
