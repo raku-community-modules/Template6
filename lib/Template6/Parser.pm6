@@ -1,4 +1,5 @@
 use v6;
+use MONKEY-SEE-NO-EVAL;
 
 unit class Template6::Parser;
 
@@ -180,7 +181,7 @@ method action ($statement) {
 
 method compile ($template) {
   my $script = "return sub (\$context) \{\n my \$stash = \$context.stash;\nmy \$output = '';\n";
-  my @segments = $template.split(/\n?'[%' \s* (.*?) \s* '%]'/, :all);
+  my @segments = $template.split(/\n?'[%' \s* (.*?) \s* '%]'/, :v);
   for @segments -> $segment {
     if $segment ~~ Stringy {
       my $string = $segment.subst('}}}}', '\}\}\}\}', :g);
