@@ -42,7 +42,7 @@ submethod BUILD (*%args) {
   %!providers<file> = Template6::Provider::File.new(|%args);
 }
 
-method add-provider ($name, $object) {
+method add-provider ($name, Template6::Provider $object) {
   %!providers{$name} = $object;
 }
 
