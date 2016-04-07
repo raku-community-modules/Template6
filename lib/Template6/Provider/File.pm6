@@ -1,23 +1,11 @@
 use v6;
 
-unit class Template6::Provider::File;
+use Template6::Provider;
 
-has @.include-path;
-has %.templates;
-has $.ext is rw = '.tt';
+unit class Template6::Provider::File does Template6::Provider;
 
 ## TODO: Implement 'absolute', 'relative', etc. options.
 ## TODO: Pre-compiled templates?
-
-submethod BUILD (:@path, *%args) {
-  if @path {
-    @!include-path.splice(@!include-path.elems, 0, @path);
-  }
-}
-
-method add-path ($path) {
-  @.include-path.push: $path;
-}
 
 method fetch ($name) {
   if %.templates{$name} :exists {
@@ -32,9 +20,5 @@ method fetch ($name) {
     }
   }
   return;
-}
-
-method store ($name, $template) {
-  %.templates{$name} = $template;
 }
 
