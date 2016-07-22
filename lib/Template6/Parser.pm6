@@ -22,7 +22,6 @@ method !parse-template (@defs is copy, $localline)
       $parsing-templates = False;
     }
   }
-
   $return ~= "my \%localdata;\n";
   while @defs.elems >= 3 {
     my $name  = @defs.shift;
@@ -194,7 +193,7 @@ method compile ($template) {
   }
   $script ~= "return \$output;\n\}";
 #  $*ERR.say: "<DEBUG:template>\n$script\n</DEBUG:template>";
-  my $function = EVAL $script;
+  my $function = EVAL $script.subst( / 'my %localdata;' /, '', :nd(2..*) );
   return $function;
 }
 
