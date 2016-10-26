@@ -1,4 +1,5 @@
 {
+  "perl"        : "6.*",
   "name"        : "Template6",
   "version"     : "*",
   "description" : "A template engine inspired by TT.",
