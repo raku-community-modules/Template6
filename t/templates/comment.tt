@@ -1,0 +1,10 @@
+<html>
+<head>
+<title>Comment test</title>
+</head>
+<body>
+  <p>[% get name # this is comment!!! %]</p>
+  <p>[% name # this is comment!!! %]</p>
+  <p>[% # comment only!!! %]</p>
+</body>
+</html>
