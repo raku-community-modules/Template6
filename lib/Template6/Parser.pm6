@@ -192,14 +192,14 @@ method action ($statement) {
 
 method compile ($template) {
   my $script = "return sub (\$context) \{\n my \$stash = \$context.stash;\nmy \$output = '';\n";
-  my @segments = $template.split(/\n?'[%' \s* (.*?) \s* '%]'/, :v);
+  my @segments = $template.split(/\n?'[%' \s* $<tokens>=(.*?) \s* '%]'/, :v);
   for @segments -> $segment {
     if $segment ~~ Stringy {
       my $string = $segment.subst('}}}}', '\}\}\}\}', :g);
       $script ~= "\$output ~= Q\{\{\{\{$string\}\}\}\};\n";
     }
     elsif $segment ~~ Match {
-      my $statement = ~$segment[0];
+      my $statement = ~$segment<tokens>;
       $script ~= self.action($statement);
     }
   }
