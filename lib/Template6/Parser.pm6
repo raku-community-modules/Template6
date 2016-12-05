@@ -163,8 +163,20 @@ method parse-end {
   return "\n\}\n";
 }
 
+method remove-comment (*@tokens --> List) {
+  my $comment-index = @tokens.first: * eq '#';
+  return @tokens without $comment-index;
+  my @cleanuped_tokens;
+  for @tokens -> $token {
+    last if $token eq '#';
+    @cleanuped_tokens.push($token);
+  }
+  @cleanuped_tokens;
+}
+
 method action ($statement) {
-  my @stmts = $statement.comb(/\".*?\" | \'.*?\' | \S+/);
+  my @stmts = self.remove-comment($statement.comb(/\".*?\" | \'.*?\' | \S+/));
+  return '' unless @stmts.elems > 0;
   my $name = @stmts.shift.lc;
   my $method = 'parse-' ~ $name;
   if self.can($method) {
