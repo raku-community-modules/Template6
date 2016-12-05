@@ -18,6 +18,7 @@ my $wanted = "<html>
   <p>John</p>
   <p>John</p>
   <p></p>
+  <p></p>
   <p>John</p>
   <p></p>
 </body>
