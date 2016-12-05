@@ -6,5 +6,9 @@
   <p>[% get name # this is comment!!! %]</p>
   <p>[% name # this is comment!!! %]</p>
   <p>[% # comment only!!! %]</p>
+  <p>[% # multi line test1
+   name %]</p>
+  <p>[%# multi line test2
+   name %]</p>
 </body>
 </html>
