@@ -175,7 +175,7 @@ method remove-comment (*@tokens --> List) {
 }
 
 method action ($statement) {
-  my @stmts = self.remove-comment($statement.comb(/\".*?\" | \'.*?\' | \S+/));
+  my @stmts = $statement.split(/\n/).map({ self.remove-comment(.comb(/\".*?\" | \'.*?\' | \S+/)) }).flat;
   return '' unless @stmts.elems > 0;
   my $name = @stmts.shift.lc;
   my $method = 'parse-' ~ $name;
@@ -192,13 +192,13 @@ method action ($statement) {
 
 method compile ($template) {
   my $script = "return sub (\$context) \{\n my \$stash = \$context.stash;\nmy \$output = '';\n";
-  my @segments = $template.split(/\n?'[%' \s* $<tokens>=(.*?) \s* '%]'/, :v);
+  my @segments = $template.split(/\n?'[%' $<comment-signature>=(\#?) \s* $<tokens>=(.*?) \s* '%]'/, :v);
   for @segments -> $segment {
     if $segment ~~ Stringy {
       my $string = $segment.subst('}}}}', '\}\}\}\}', :g);
       $script ~= "\$output ~= Q\{\{\{\{$string\}\}\}\};\n";
     }
-    elsif $segment ~~ Match {
+    elsif $segment ~~ Match && !~$segment<comment-signature> {
       my $statement = ~$segment<tokens>;
       $script ~= self.action($statement);
     }
