@@ -34,7 +34,26 @@ my @ol = 'One', 'Two', 'Three';
 
 is $t6.process('for', :title<For Test>, :ul(@ul), :ol(@ol)), $wanted, 'Basic for statement.';
 
-$wanted = "<html>
+my $bobpiece = "<tr>
+<td>bob\@smith.com</td>
+<td>27</td>
+</tr>
+";
+
+my $lisapiece = "<tr>
+<td>lisa\@abbot.org</td>
+<td>18</td>
+</tr>
+";
+
+my $melissapiece = "<tr>
+<td>melissa\@senstry.com</td>
+<td>31</td>
+</tr>
+";
+
+
+$wanted = rx{ "<html>
 <head>
 <title>For Hash Test</title>
 </head>
@@ -44,22 +63,21 @@ $wanted = "<html>
 <th>Email</th>
 <th>Age</th>
 </tr>
-<tr>
-<td>bob\@smith.com</td>
-<td>27</td>
-</tr>
-<tr>
-<td>lisa\@abbot.org</td>
-<td>18</td>
-</tr>
-<tr>
-<td>melissa\@senstry.com</td>
-<td>31</td>
-</tr>
-</table>
+" [
+    | $bobpiece
+        [ | $lisapiece $melissapiece
+          | $melissapiece $lisapiece ]
+    | $lisapiece
+        [ | $bobpiece $melissapiece
+          | $melissapiece $bobpiece ]
+    | $melissapiece
+        [ | $bobpiece $lisapiece
+          | $lisapiece $bobpiece ]
+  ]
+"</table>
 </body>
 </html>
-";
+" };
 
 my %users = %(
  
@@ -68,5 +86,5 @@ my %users = %(
   'melissa@senstry.com' => 31,
 );
 
-is $t6.process('for-hash', :title<For Hash Test>, :users(%users)), $wanted, 'For statement with hash.';
+ok $t6.process('for-hash', :title<For Hash Test>, :users(%users)) ~~ $wanted, 'For statement with hash.';
 
