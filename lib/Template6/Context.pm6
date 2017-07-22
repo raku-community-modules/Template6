@@ -5,6 +5,7 @@ unit class Template6::Context;
 use Template6::Parser;
 use Template6::Stash;
 use Template6::Provider::File;
+use Template6::Provider::String;
 
 has $.service;        ## The parent Service object.
 has $.parser;         ## Our Parser object.
@@ -39,14 +40,20 @@ submethod BUILD (*%args) {
   else {
     $!stash = Template6::Stash.new(|%args);
   }
-  %!providers<file> = Template6::Provider::File.new(|%args);
+  if (%args<providers>) {
+    %!providers = %args<providers>;
+  }
+  else {
+    %!providers<file> = Template6::Provider::File.new(|%args);
+    %!providers<string> = Template6::Provider::String.new(|%args);
+  }
 }
 
 method add-provider ($name, Template6::Provider $object) {
   %!providers{$name} = $object;
 }
 
-## A couple of helper methods for the default provider.
+## A couple of helper methods for the default providers.
 
 method add-path ($path) {
   if %!providers<file> :exists {
@@ -57,6 +64,12 @@ method add-path ($path) {
 method set-extension ($ext) {
   if %!providers<file> :exists {
     %!providers<file>.ext = $ext;
+  }
+}
+
+method add-template ($name, $template) {
+  if %!providers<string> :exists {
+    %!providers<string>.store($name, $template);
   }
 }
 

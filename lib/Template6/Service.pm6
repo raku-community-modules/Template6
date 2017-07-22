@@ -4,7 +4,7 @@ unit class Template6::Service;
 
 use Template6::Context;
 
-has $.context handles <add-provider add-path set-extension>;
+has $.context handles <add-provider add-path set-extension add-template>;
 has @.pre-process;
 has @.post-process;
 has @.wrappers;

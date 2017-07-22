@@ -4,7 +4,7 @@ unit class Template6;
 
 use Template6::Service;
 
-has $.service handles <process context add-path set-extension add-provider>;
+has $.service handles <process context add-path set-extension add-template add-provider>;
 
 submethod BUILD (*%args) {
   if (%args<service>) {
