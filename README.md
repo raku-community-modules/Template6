@@ -1,4 +1,4 @@
-# Template6: A Template Engine for Perl 6 #
+# Template6: A Template Engine for Raku #
 
 Inspired by Template Toolkit from Perl 5,
 Template6 is a simple template engine designed to be
