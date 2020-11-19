@@ -1,6 +1,6 @@
 # Template6: A Template Engine for Raku #
 
-Inspired by Template Toolkit from Perl 5,
+Inspired by Template Toolkit from Perl,
 Template6 is a simple template engine designed to be
 a content-neutral template language.
 
@@ -78,12 +78,12 @@ are not in TT. Not all features will work the same either.
 ## Possible future directions
 
 I would also like to investigate the potential for an alternative to Template6::Parser that
-generates Perl 6 closures without the use of eval. This would be far trickier, and would not
+generates Raku closures without the use of eval. This would be far trickier, and would not
 be compatible with the precompiled templates, but would be an interesting exercise nonetheless.
 
 ## Author
 
-This was build by Timothy Totten. You can find me on #perl6 with the nickname supernovus.
+This was build by Timothy Totten. You can find me on #raku with the nickname supernovus.
 
 ## License
 
