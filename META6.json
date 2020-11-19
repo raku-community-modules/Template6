@@ -14,5 +14,5 @@
     "Template6::Provider::String"  : "lib/Template6/Provider/String.pm6"
   },
   "depends"     : [ ],
-  "source-url"  : "git://github.com/supernovus/template6.git"
+  "source-url"  : "git://github.com/raku-community-modules/Template6.git"
 }
