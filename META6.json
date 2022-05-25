@@ -25,6 +25,9 @@
   ],
   "source-url": "git://github.com/raku-community-modules/Template6.git",
   "tags": [
+    "TEMPLATE",
+    "TT",
+    "WEB"
   ],
   "test-depends": [
   ],
