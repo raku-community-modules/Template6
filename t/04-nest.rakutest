@@ -1,7 +1,3 @@
-use v6;
-
-#use lib 'lib';
-
 use Test;
 use Template6;
 
@@ -80,3 +76,4 @@ CompanyUser.new(:name<Melissa>, :job<VP Sales>,  :birthday(Date.new('1981-03-21'
 
 is $t6.process('simple-nest', :users(@users)), $wanted, 'Nested data with array of objects';
 
+# vim: expandtab shiftwidth=4

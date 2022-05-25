@@ -1,91 +1,132 @@
-# Template6: A Template Engine for Raku #
+[![Actions Status](https://github.com/raku-community-modules/Template6/actions/workflows/test.yml/badge.svg)](https://github.com/raku-community-modules/Template6/actions)
 
-Inspired by Template Toolkit from Perl,
-Template6 is a simple template engine designed to be
-a content-neutral template language.
+NAME
+====
 
-I also intend to borrow features and ideas from
-my own Flower and Garden projects.
+Template6 - A Template Engine for Raku
 
-This project does not intend to create an exact clone of
-Template Toolkit. Some features from TT are not planned for
-inclusion, and likewise, some feature will be included that
-are not in TT. Not all features will work the same either.
+SYNOPSIS
+========
 
-## Currently implemented features
+```raku
+use Template6;
+```
 
-*    GET and SET statements, including implicit versions.
+DESCRIPTION
+===========
 
-     * [% get varname %]
-     * [% varname %]
-     * [% set varname = value %]
-     * [% varname = value %]
+Inspired by Template Toolkit from Perl, Template6 is a simple template engine designed to be a content-neutral template language.
 
-*    FOR statement.
+I also intend to borrow features and ideas from my own Flower and Garden projects.
 
-     This replaces the FOREACH statement in TT2.
-     It can be used in one of four ways:
+This project does not intend to create an exact clone of Template Toolkit. Some features from TT are not planned for inclusion, and likewise, some feature will be included that are not in TT. Not all features will work the same either.
 
-     * [% for listname as itemname %]
-     * [% for listname -> itemname %]
-     * [% for itemname in listname %]
-     * [% for itemname = listname %]
+Currently implemented features
+------------------------------
 
-     If used with Hashes, you'll need to query the .key or .value accessors.
+### GET and SET statements, including implicit versions.
 
-*    IF/ELSIF/ELSE/UNLESS statements.
+  * [% get varname %]
 
-     These are very simplistic at the moment, but work for basic tests.
+  * [% varname %]
 
-*    Querying nested data structures using a simple dot operator syntax.
-*    CALL and DEFAULT statements.
-*    INSERT, INCLUDE and PROCESS statements.
+  * [% set varname = value %]
 
-## Differences with Template Toolkit
+  * [% varname = value %]
 
- * You should use explicit quotes, including in INSERT/INCLUDE/PROCESS directives.
- * All statement directives are case insensitive.
- * There are no plans for the INTERPOLATE option/style.
- * Anything not yet implemented (see TODO below.)
+### FOR statement.
 
-## Caveats
+This replaces the FOREACH statement in TT2. It can be used in one of four ways:
 
- * Whitespace control is not implemented, so some things are fairly odd. See TODO.
- * A lot of little nit-picky stuff, likely related to the whitespace issue.
+  * [% for listname as itemname %]
 
-## TODO
+  * [% for listname -> itemname %]
+
+  * [% for itemname in listname %]
+
+  * [% for itemname = listname %]
+
+If used with Hashes, you'll need to query the .key or .value accessors.
+
+### IF/ELSIF/ELSE/UNLESS statements.
+
+These are very simplistic at the moment, but work for basic tests.
+
+  * Querying nested data structures using a simple dot operator syntax.
+
+  * CALL and DEFAULT statements.
+
+  * INSERT, INCLUDE and PROCESS statements.
+
+Differences with Template Toolkit
+---------------------------------
+
+  * You should use explicit quotes, including in INSERT/INCLUDE/PROCESS directives.
+
+  * All statement directives are case insensitive.
+
+  * There are no plans for the INTERPOLATE option/style.
+
+  * Anything not yet implemented (see TODO below.)
+
+Caveats
+-------
+
+  * Whitespace control is not implemented, so some things are fairly odd. See TODO.
+
+  * A lot of little nit-picky stuff, likely related to the whitespace issue.
+
+TODO
+----
 
 ### Short Term Goals
 
- * WRAPPER statement
- * block statements
- * given/when statements
- * Add 'absolute' and 'relative' options to Template6::Provider::File
- * Whitespace control
- * Precompiled/cached templates
- * Tag styles (limited to definable start_tag and end_tag)
+  * WRAPPER statement
+
+  * block statements
+
+  * given/when statements
+
+  * Add 'absolute' and 'relative' options to Template6::Provider::File
+
+  * Whitespace control
+
+  * Precompiled/cached templates
+
+  * Tag styles (limited to definable start_tag and end_tag)
 
 ### Long Term Goals
 
- * Filters
- * Variable interpolation (in strings, variable names, etc.)
- * Capture of directive output
- * Directive comments
- * Side-effect notation
- * Multiple directives in a single statement tag set
- * Macros, plugins, etc.
+  * Filters
 
-## Possible future directions
+  * Variable interpolation (in strings, variable names, etc.)
 
-I would also like to investigate the potential for an alternative to Template6::Parser that
-generates Raku closures without the use of eval. This would be far trickier, and would not
-be compatible with the precompiled templates, but would be an interesting exercise nonetheless.
+  * Capture of directive output
 
-## Author
+  * Directive comments
 
-This was build by Timothy Totten. You can find me on #raku with the nickname supernovus.
+  * Side-effect notation
 
-## License
+  * Multiple directives in a single statement tag set
 
-Artistic License 2.0
+  * Macros, plugins, etc.
+
+Possible future directions
+--------------------------
+
+I would also like to investigate the potential for an alternative to Template6::Parser that generates Raku closures without the use of EVAL. This would be far trickier, and would not be compatible with the precompiled templates, but would be an interesting exercise nonetheless.
+
+AUTHOR
+======
+
+Timothy Totten
+
+COPYRIGHT AND LICENSE
+=====================
+
+Copyright 2012 - 2017 Timothy Totten
+
+Copyright 2018 - 2022 Raku Community
+
+This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
 

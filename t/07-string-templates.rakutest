@@ -1,7 +1,3 @@
-use v6;
-
-#use lib 'lib';
-
 use Test;
 use Template6;
 
@@ -45,3 +41,4 @@ $wanted = "<html>
 
 is $t6.process('hello', :name<Universe>), $wanted, 'Second string template when already compiled.';
 
+# vim: expandtab shiftwidth=4

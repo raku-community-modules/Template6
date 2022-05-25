@@ -1,7 +1,3 @@
-use v6;
-
-#use lib 'lib';
-
 use Test;
 use Template6;
 
@@ -26,3 +22,5 @@ my $wanted = "<html>
 ";
 
 is $t6.process('comment', :name<John>), $wanted, 'Comment properly parsed.';
+
+# vim: expandtab shiftwidth=4

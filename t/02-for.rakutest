@@ -1,7 +1,3 @@
-use v6;
-
-#use lib 'lib';
-
 use Test;
 use Template6;
 
@@ -88,3 +84,4 @@ my %users = %(
 
 ok $t6.process('for-hash', :title<For Hash Test>, :users(%users)) ~~ $wanted, 'For statement with hash.';
 
+# vim: expandtab shiftwidth=4

@@ -1,7 +1,3 @@
-use v6;
-
-#use lib 'lib';
-
 use Test;
 use Template6;
 
@@ -33,3 +29,4 @@ is $t6.process(
   :anumber(7)
 ),$wanted, 'If statement.';
 
+# vim: expandtab shiftwidth=4

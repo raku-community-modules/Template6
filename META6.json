@@ -1,18 +1,32 @@
 {
-  "perl"        : "6.*",
-  "name"        : "Template6",
-  "version"     : "0.10.0",
-  "description" : "A template engine inspired by TT.",
+  "auth": "zef:raku-community-modules",
+  "authors": [
+    "Timothy Totten"
+  ],
+  "build-depends": [
+  ],
+  "depends": [
+  ],
+  "description": "A Template Engine for Raku",
+  "license": "Artistic-2.0",
+  "name": "Template6",
+  "perl": "6.*",
   "provides": {
-    "Template6"                    : "lib/Template6.pm6",
-    "Template6::Parser"            : "lib/Template6/Parser.pm6",
-    "Template6::Service"           : "lib/Template6/Service.pm6",
-    "Template6::Context"           : "lib/Template6/Context.pm6",
-    "Template6::Stash"             : "lib/Template6/Stash.pm6",
-    "Template6::Provider"          : "lib/Template6/Provider.pm6",
-    "Template6::Provider::File"    : "lib/Template6/Provider/File.pm6",
-    "Template6::Provider::String"  : "lib/Template6/Provider/String.pm6"
+    "Template6": "lib/Template6.rakumod",
+    "Template6::Context": "lib/Template6/Context.rakumod",
+    "Template6::Parser": "lib/Template6/Parser.rakumod",
+    "Template6::Provider": "lib/Template6/Provider.rakumod",
+    "Template6::Provider::File": "lib/Template6/Provider/File.rakumod",
+    "Template6::Provider::String": "lib/Template6/Provider/String.rakumod",
+    "Template6::Service": "lib/Template6/Service.rakumod",
+    "Template6::Stash": "lib/Template6/Stash.rakumod"
   },
-  "depends"     : [ ],
-  "source-url"  : "git://github.com/raku-community-modules/Template6.git"
+  "resources": [
+  ],
+  "source-url": "git://github.com/raku-community-modules/Template6.git",
+  "tags": [
+  ],
+  "test-depends": [
+  ],
+  "version": "0.10.1"
 }

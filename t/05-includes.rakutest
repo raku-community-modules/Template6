@@ -1,7 +1,3 @@
-use v6;
-
-#use lib 'lib';
-
 use Test;
 use Template6;
 
@@ -38,3 +34,4 @@ $wanted = "<html>
 
 is $t6.process('process', :name<World>), $wanted, 'PROCESS statement';
 
+# vim: expandtab shiftwidth=4
