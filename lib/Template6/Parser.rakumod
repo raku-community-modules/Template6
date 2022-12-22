@@ -9,9 +9,9 @@ method !parse-template(@defs is copy, $localline) {
     my $parsing-templates = True;
     my @templates;
 
-    while $parsing-templates && @defs.elems {
+    while $parsing-templates && @defs {
         @templates.push: @defs.shift;
-        if @defs.elems && @defs[0] eq '+' {
+        if @defs && @defs[0] eq '+' {
             @defs.shift;
         }
         else {
@@ -19,20 +19,17 @@ method !parse-template(@defs is copy, $localline) {
         }
     }
     $return ~= "my \%localdata;\n";
-    while @defs.elems >= 3 {
-        my $name    = @defs.shift;
-        my $op        = @defs.shift;
-        my $value = @defs.shift;
-        if $value ~~ /\"(.*?)\"|\'(.*?)\'/ {
-            my $string = ~$0;
-            $return ~= "\%localdata<$name> = '$string';\n";
-        }
-        elsif $value ~~ /^\d+[\.\d+]?$/ {
-            my $number = +$value;
-            $return ~= "\%localdata<$name> = $number;\n";
-        }
-        else {
-            $return ~= "\%localdata<$name> = \$stash.get('$value');\n";
+    for @defs -> $name, $op, $value {
+        given $value {
+            when / \" (.*?) \" | \' (.*?) \' / {
+                $return ~= "\%localdata<$name> = '$0';\n";
+            }
+            when /^ \d+ [\.\d+]? $/ {
+                $return ~= "\%localdata<$name> = $value.Numeric();\n";
+            }    
+            default {
+                $return ~= "\%localdata<$name> = \$stash.get('$value');\n";
+            }
         }
     }
 
@@ -41,7 +38,7 @@ method !parse-template(@defs is copy, $localline) {
         $template ~~ s/[\"|\']$//;
         $return ~= "\{\n my \$tfile = \$stash.get('$template');\n";
         $return ~= $localline;
-        $return ~= "if \$template.defined \{ \$output ~= \$template; \}\n";
+        $return ~= "with \$template \{ \$output ~= \$_; \}\n";
         $return ~= "\}\n";
     }
     $return
@@ -72,23 +69,20 @@ method parse-call(Str:D $name) {
 
 method parse-set(:$default, *@values is copy) {
     my $return = '';
-    while @values.elems >= 3 {
-        my $name    = @values.shift;
-        my $op        = @values.shift;
-        my $value = @values.shift;
+    for @values -> $name, $op, $value {
         if $default {
             $return ~= "if ! \$stash.get('$name', :strict) \{\n";
         }
-        if $value ~~ /\"(.*?)\"|\'(.*?)\'/ {
-            my $string = ~$0;
-            $return ~= "\$stash.put('$name', '$string');\n";
-        }
-        elsif $value ~~ /^\d+[\.\d+]?$/ {
-            my $number = +$value;
-            $return ~= "\$stash.put('$name', $number);\n";
-        }
-        else {
-            $return ~= "\$stash.put('$name', \$stash.get('$value'));\n";
+        given $value {
+            when / \" (.*?) \" | \' (.*?) \' / {
+                $return ~= "\$stash.put('$name', '$0');\n";
+            }
+            when /^ \d+ [\.\d+]? $/ {
+                $return ~= "\$stash.put('$name', $value.Numeric());\n";
+            }
+            default {
+                $return ~= "\$stash.put('$name', \$stash.get('$value'));\n";
+            }
         }
         if $default {
             $return ~= "}\n";
@@ -118,12 +112,12 @@ method parse-for($left, $op, $right) {
 
 method !parse-conditional(Str:D $name, @stmts is copy) {
     for @stmts -> $stmt is rw {
-        if @!keywords.grep($stmt) { next; }
-        if $stmt ~~ /^\d+$/ { next; }
-        $stmt .= subst(/^(\w+)$/, -> $word { "\$stash.get('$word')" });
+        next if @!keywords.grep($stmt);
+        next if $stmt ~~ /^ \d+ $/;
+        $stmt .= subst(/^ (\w+) $/, -> $word { "\$stash.get('$word')" });
     }
     my $statement = @stmts.join(' ');
-    "if $statement \{\n"
+    "$name $statement \{\n"
 }
 
 method parse-if(*@stmts) {
@@ -151,23 +145,15 @@ method parse-end {
 }
 
 method remove-comment(*@tokens --> List) {
-    my $comment-index = @tokens.first: * eq '#';
-    return @tokens without $comment-index;
-
-    my @cleanuped_tokens;
-    for @tokens -> $token {
-        last if $token eq '#';
-        @cleanuped_tokens.push($token);
-    }
-    @cleanuped_tokens
+    @tokens.toggle(* ne '#').cache
 }
 
 method action($statement) {
     my @stmts = $statement
-      .split(/\n/)
-      .map({ self.remove-comment(.comb(/\".*?\" | \'.*?\' | \S+/)) })
+      .lines
+      .map({ self.remove-comment(.comb(/ \" .*? \" | \' .*? \' | \S+ /)) })
       .flat;
-    return '' unless @stmts.elems;
+    return '' unless @stmts;
 
     my $name = @stmts.shift.lc;
     my $method = 'parse-' ~ $name;
@@ -180,7 +166,7 @@ method action($statement) {
 
 method compile($template) {
     my $script = "return sub (\$context) \{\n my \$stash = \$context.stash;\nmy \$output = '';\n";
-    my @segments = $template.split(/\n?'[%' $<comment-signature>=(\#?) \s* $<tokens>=(.*?) \s* '%]'/, :v);
+    my @segments = $template.split(/ \n? '[%' $<comment-signature>=(\#?) \s* $<tokens>=(.*?) \s* '%]' /, :v);
     for @segments -> $segment {
         if $segment ~~ Stringy {
             my $string = $segment.subst('}}}}', '\}\}\}\}', :g);

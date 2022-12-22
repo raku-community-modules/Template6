@@ -26,10 +26,8 @@
 [% else %]
 <p>This else should not be caught</p>
 [% end %]
-[% unless anumber > 5 %]
+[% unless anumber < 5 %]
 <p>Unless works</p>
-[% else %]
-<p>What the heck?</p>
 [% end %]
 </body>
 </html>

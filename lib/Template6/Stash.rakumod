@@ -11,11 +11,9 @@ method lookup(@query, $data) {
     my $element = @query.shift;
     my $found;
     if $data ~~ Hash {
-        if $data{$element}:exists {
-            $found = $data{$element};
-        }
+        $found = $_ with $data{$element};
     }
-    elsif $data ~~ Array && $element ~~ /^\d+$/ {
+    elsif $data ~~ Array && $element ~~ /^ \d+ $/ {
         if $data.elems >= $element {
             $found = $data[$element];
         }
@@ -23,26 +21,18 @@ method lookup(@query, $data) {
     elsif $data.can($element) {
         $found = $data."$element"();
     }
-    if $found.defined {
-        if @query.elems > 0 {
-            return self.lookup(@query, $found);
-        }
-        else {
-            return $found;
-        }
+    with $found {
+        .return unless @query;
+        return self.lookup(@query, $_);
     }
 }
 
 method get($query, :$strict) {
-    if %!data{$query}:exists {
-        return %!data{$query};
-    }
-    elsif $query ~~ /\./ {
+    .return with %!data{$query};
+    if $query.contains('.') {
         my @query = $query.split('.');
         my $value = self.lookup(@query, %!data);
-        if ($value.defined) {
-            return $value;
-        }
+        .return with $value;
     }
 
     # If nothing was found, and we're not in strict mode, we return the original query.

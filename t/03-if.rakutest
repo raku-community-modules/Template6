@@ -21,12 +21,14 @@ my $wanted = "<html>
 </html>
 ";
 
-is $t6.process(
+my $actual = $t6.process(
   'if', 
   :shouldbetrue(True), 
   :shouldbefalse(False),
   :astring("A string"),
   :anumber(7)
-),$wanted, 'If statement.';
+);
+
+is $actual, $wanted, 'If statement.';
 
 # vim: expandtab shiftwidth=4

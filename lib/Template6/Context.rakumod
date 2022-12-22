@@ -9,7 +9,7 @@ has $.service;       # The parent Service object.
 has $.parser;        # Our Parser object.
 has $.stash is rw;   # Our Stash object.
 
-has %.blocks is rw;  # Currently known blocks.
+has %.blocks;  # Currently known blocks.
 has @.block-cache;   # Known block tree (for nested contexts.)
 
 has %.providers;     # Providers for templates, based on prefix names.
@@ -23,13 +23,13 @@ has %.providers;     # Providers for templates, based on prefix names.
 
 submethod BUILD(*%args) {
     $!service = %args<service>;
-    unless %args<context> :exists {
-        %args<context> = self;
+    without %args<context> {
+        $_ = self;
     }
     $!parser = %args<parser> // Template6::Parser.new(|%args);
     $!stash = %args<stash>   // Template6::Stash.new(|%args);
     
-    if (%args<providers>) {
+    if %args<providers> {
         %!providers = %args<providers>;
     }
     else {
@@ -45,21 +45,15 @@ method add-provider(Str:D $name, Template6::Provider:D $object) {
 ## A couple of helper methods for the default providers.
 
 method add-path($path --> Nil) {
-    if %!providers<file>:exists {
-        %!providers<file>.add-path($path);
-    }
+    .add-path($path) with %!providers<file>;
 }
 
 method set-extension($ext --> Nil) {
-    if %!providers<file>:exists {
-        %!providers<file>.ext = $ext;
-    }
+    .ext = $ext with %!providers<file>;
 }
 
 method add-template($name, $template --> Nil) {
-    if %!providers<string>:exists {
-        %!providers<string>.store($name, $template);
-    }
+    .store($name, $template) with %!providers<string>;
 }
 
 method get-template-text(Str:D $name is copy) {
@@ -73,34 +67,30 @@ method get-template-text(Str:D $name is copy) {
         @providers = %!providers{$prefix};
     }
     else {
-        @providers = @(%!providers.values);
+        @providers = %!providers.values;
     }
     my $template;
     for @providers -> $provider {
         $template = $provider.fetch($name);
-        last if $template.defined;
+        last with $template;
     }
     $template
 }
 
 method get-template-block(Str:D $name) {
-    if %.blocks{$name} :exists {
-        return %.blocks{$name};
-    }
+    .return with %.blocks{$name};
     for @.block-cache -> $known-blocks {
-        if $known-blocks{$name}:exists {
-            return $known-blocks{$name};
-        }
+        .return with $known-blocks{$name};
     }
 
     my $template = self.get-template-text($name);
 
     ## If we have a template, store it.
-    if $template.defined {
-        if ($template !~~ Callable) {
-            $template = $.parser.compile($template);
+    with $template {
+        if $_ !~~ Callable {
+            $_ = $.parser.compile($_);
         }
-        %.blocks{$name} = $template;
+        %.blocks{$name} = $_;
     }
     $template
 }

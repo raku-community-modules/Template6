@@ -2,11 +2,11 @@ unit role Template6::Provider;
 
 has @.include-path;
 has %.templates;
-has $.ext is rw = '.tt';
+has $.ext is rw = 'tt';
 
 submethod BUILD(:@path, *%args) {
     if @path {
-        @!include-path.splice(@!include-path.elems, 0, @path);
+        @!include-path.append(@path);
     }
 }
 

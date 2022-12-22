@@ -13,20 +13,20 @@ submethod BUILD(*%args) {
         $!context = %args<context>;
     }
     else {
-        unless %args<service> :exists {
-            %args<service> = self;
+        without %args<service> {
+            $_ = self;
         }
         $!context = Template6::Context.new(|%args);
     }
-    if %args<reset> :exists {
-        $!reset = %args<reset>;
+    with %args<reset> {
+        $!reset = $_;
     }
 }
 
 ## Process a template using a data provider.
 method process($template, *%params) {
     my $output = '';
-    if $!reset { $.context.reset(); }
+    $.context.reset if $!reset;
     %params<template> = $template;
     ## First, anything in our pre-process queue.
     for @.pre-process -> $pre-template {
