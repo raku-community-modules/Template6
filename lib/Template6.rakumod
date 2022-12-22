@@ -68,6 +68,7 @@ These are very simplistic at the moment, but work for basic tests.
 =head2 Differences with Template Toolkit
 
 =item You should use explicit quotes, including in INSERT/INCLUDE/PROCESS directives.
+=item UNLESS-ELSE is not supported - Raku also doesn't support this syntax
 =item All statement directives are case insensitive.
 =item There are no plans for the INTERPOLATE option/style.
 =item Anything not yet implemented (see TODO below.)
