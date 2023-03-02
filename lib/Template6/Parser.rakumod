@@ -18,17 +18,29 @@ method !parse-template(@defs is copy, $localline) {
             $parsing-templates = False;
         }
     }
-    $return ~= "my \%localdata;\n";
+    $return ~= q:to/RAKU/;
+    my %localdata;
+
+    RAKU
     for @defs -> $name, $op, $value {
-        given $value {
+        $return ~= do given $value {
             when / \" (.*?) \" | \' (.*?) \' / {
-                $return ~= "\%localdata<$name> = '$0';\n";
+                q:to/RAKU/
+                %localdata<\qq[$name]> = '\qq[$0]';
+                
+                RAKU
             }
-            when /^ \d+ [\.\d+]? $/ {
-                $return ~= "\%localdata<$name> = $value.Numeric();\n";
+            when /^ \d+ ['.' \d+]? $/ {
+                q:to/RAKU/
+                %localdata<\qq[$name]> = '\qq[$value.Numeric()]';
+                
+                RAKU
             }    
             default {
-                $return ~= "\%localdata<$name> = \$stash.get('$value');\n";
+                q:to/RAKU/
+                %localdata<\qq[$name]> = $stash.get('\qq[$value]');
+                
+                RAKU
             }
         }
     }
@@ -36,10 +48,20 @@ method !parse-template(@defs is copy, $localline) {
     for @templates -> $template is rw {
         $template ~~ s/^[\"|\']//;
         $template ~~ s/[\"|\']$//;
-        $return ~= "\{\n my \$tfile = \$stash.get('$template');\n";
+        $return ~= q:to/RAKU/;
+        {
+            my $tfile = $stash.get('\qq[$template]');
+
+        RAKU
         $return ~= $localline;
-        $return ~= "with \$template \{ \$output ~= \$_; \}\n";
-        $return ~= "\}\n";
+        $return ~= q:to/RAKU/;
+            with $template { $output ~= $_; }
+
+        RAKU
+        $return ~= q:to/RAKU/;
+        }
+
+        RAKU
     }
     $return
 }
@@ -60,32 +82,51 @@ method parse-process(*@defs) {
 }
 
 method parse-get(Str:D $name) {
-    "\$output ~= \$stash.get('$name');"
+    q:to/RAKU/
+    $output ~= $stash.get('\qq[$name]');
+    RAKU
 }
 
 method parse-call(Str:D $name) {
-    "\$stash.get('$name');"
+    q:to/RAKU/
+    $stash.get('\qq[$name]');
+    RAKU
 }
 
 method parse-set(:$default, *@values is copy) {
     my $return = '';
     for @values -> $name, $op, $value {
         if $default {
-            $return ~= "if ! \$stash.get('$name', :strict) \{\n";
+            $return ~= q:to/RAKU/;
+            unless $stash.get('\qq[$name]', :strict) {
+
+            RAKU
         }
-        given $value {
+        $return ~= do given $value {
             when / \" (.*?) \" | \' (.*?) \' / {
-                $return ~= "\$stash.put('$name', '$0');\n";
+                q:to/RAKU/
+                $stash.put('\qq[$name]', '\qq[$0]');
+
+                RAKU
             }
-            when /^ \d+ [\.\d+]? $/ {
-                $return ~= "\$stash.put('$name', $value.Numeric());\n";
+            when /^ \d+ ['.' \d+]? $/ {
+                q:to/RAKU/
+                stash.put('\qq[$name]', \qq[$value.Numeric()]);
+
+                RAKU
             }
             default {
-                $return ~= "\$stash.put('$name', \$stash.get('$value'));\n";
+                q:to/RAKU/
+                $stash.put('\qq[$name]', $stash.get('\qq[$value]'));
+
+                RAKU
             }
         }
         if $default {
-            $return ~= "}\n";
+            $return ~= q:to/RAKU/;
+            }
+
+            RAKU
         }
     }
     $return
@@ -106,8 +147,10 @@ method parse-for($left, $op, $right) {
         $itemname = $left;
         $loopname = $right;
     }
-    "for \@(\$stash.get('$itemname')) -> \$$loopname \{\n"
-      ~ "\$stash.put('$loopname', \$$loopname);"
+    q:to/RAKU/
+    for @($stash.get('\qq[$itemname]')) -> $\qq[$loopname] {
+        $stash.put('\qq[$loopname]', $\qq[$loopname]);
+    RAKU
 }
 
 method !parse-conditional(Str:D $name, @stmts is copy) {
@@ -129,7 +172,7 @@ method parse-unless(*@stmts) {
 }
 
 method parse-elsif(*@stmts) {
-    "\n\}\n" ~ self!parse-conditional('elsif', @stmts)
+    "\n}\n" ~ self!parse-conditional('elsif', @stmts)
 }
 
 method parse-elseif(*@stmts) {
@@ -137,11 +180,11 @@ method parse-elseif(*@stmts) {
 }
 
 method parse-else() {
-    "\n\}\nelse \{\n"
+    q:b[\n} else {\n]
 }
 
 method parse-end {
-    "\n\}\n"
+    "\n}\n"
 }
 
 method remove-comment(*@tokens --> List) {
@@ -165,19 +208,30 @@ method action($statement) {
 }
 
 method compile($template) {
-    my $script = "return sub (\$context) \{\n my \$stash = \$context.stash;\nmy \$output = '';\n";
-    my @segments = $template.split(/ \n? '[%' $<comment-signature>=(\#?) \s* $<tokens>=(.*?) \s* '%]' /, :v);
+    my $script = q:to/RAKU/;
+    return sub ($context) {
+        my $stash = $context.stash;
+        my $output = '';
+
+    RAKU
+    my @segments = $template.split(/ \n? '[%' $<comment-signature>=('#'?) \s* $<tokens>=(.*?) \s* '%]' /, :v);
     for @segments -> $segment {
         if $segment ~~ Stringy {
             my $string = $segment.subst('}}}}', '\}\}\}\}', :g);
-            $script ~= "\$output ~= Q\{\{\{\{$string\}\}\}\};\n";
+            $script ~= q:to/RAKU/;
+            $output ~= Q{{{{\qq[$string]}}}};
+            
+            RAKU
         }
         elsif $segment ~~ Match && !~$segment<comment-signature> {
             my $statement = ~$segment<tokens>;
             $script ~= self.action($statement);
         }
     }
-    $script ~= "return \$output;\n\}";
+    $script ~= q:to/RAKU/;
+        return $output;
+    }
+    RAKU
 #    $*ERR.say: "<DEBUG:template>\n$script\n</DEBUG:template>";
     $script.subst( / 'my %localdata;' /, '', :nd(2..*) ).EVAL
 }
