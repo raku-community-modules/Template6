@@ -157,7 +157,7 @@ method !parse-conditional(Str:D $name, @stmts is copy) {
     for @stmts -> $stmt is rw {
         next if @!keywords.grep($stmt);
         next if $stmt ~~ /^ \d+ $/;
-        $stmt .= subst(/^ (\w+) $/, -> $word { "\$stash.get('$word')" });
+        $stmt .= subst(/^ (\w+) $/, -> $word { "\$stash.get('$word', :strict)" });
     }
     my $statement = @stmts.join(' ');
     "$name $statement \{\n"

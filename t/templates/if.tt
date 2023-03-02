@@ -29,5 +29,8 @@
 [% unless anumber < 5 %]
 <p>Unless works</p>
 [% end %]
+[% if missing %]
+<p>This shouldn't be present at all</p>
+[% end %]
 </body>
 </html>

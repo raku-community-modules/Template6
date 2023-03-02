@@ -2,6 +2,9 @@ Revision history for Template6
 
 {{$NEXT}}
 
+0.11.1  2023-03-02T23:50:07+01:00
+    - do not fall back to bare words in conditionals
+
 0.11.0  2023-03-02T02:59:10+01:00
     - preference for heredoc in generated Raku code
     - fixing an unless issue with the corresponding test case
