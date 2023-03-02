@@ -2,5 +2,12 @@ Revision history for Template6
 
 {{$NEXT}}
 
+0.11.0  2023-03-02T02:59:10+01:00
+    - preference for heredoc in generated Raku code
+    - fixing an unless issue with the corresponding test case
+    - mitigating strict type constraint for stash lookup
+    - adding a test for lookups
+    - previously unpublished control flow modifications
+
 0.10.1  2022-05-25T18:28:53+02:00
     - First version in the zef ecosystem

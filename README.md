@@ -63,6 +63,8 @@ Differences with Template Toolkit
 
   * You should use explicit quotes, including in INSERT/INCLUDE/PROCESS directives.
 
+  * UNLESS-ELSE is not supported - Raku also doesn't support this syntax
+
   * All statement directives are case insensitive.
 
   * There are no plans for the INTERPOLATE option/style.
