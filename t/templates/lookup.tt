@@ -1,0 +1,8 @@
+<html>
+<head>
+<title>Hello [% get users.2.name.0 %]</title>
+</head>
+<body>
+<h1>Hello [% users.1.name.0 %]</h1>
+</body>
+</html>

@@ -10,11 +10,11 @@ method put(Str:D $key, $value) {
 method lookup(@query, $data) {
     my $element = @query.shift;
     my $found;
-    if $data ~~ Hash {
+    if $data ~~ Map {
         $found = $_ with $data{$element};
     }
-    elsif $data ~~ Array && $element ~~ /^ \d+ $/ {
-        if $data.elems >= $element {
+    elsif $data ~~ List && $element ~~ /^ \d+ $/ {
+        if $data.elems > $element {
             $found = $data[$element];
         }
     }

@@ -1,0 +1,34 @@
+use Test;
+use Template6;
+
+plan 2;
+
+my $t6 = Template6.new;
+$t6.add-path: 't/templates';
+
+my $wanted = "<html>
+<head>
+<title>Hello Johnny</title>
+</head>
+<body>
+<h1>Hello Sonya</h1>
+</body>
+</html>
+";
+my @users = { name => <Liu Kang> }, { name => <Sonya Blade> }, { name => <Johnny Cage> };
+is $t6.process('lookup', :users(@users)), $wanted, 'Get statement.';
+
+$wanted = "<html>
+<head>
+<title>Hello Mister</title>
+</head>
+<body>
+<h1>Hello Lady</h1>
+</body>
+</html>
+";
+@users = { name => <Liu Kang> }, { name => <Lady Blade> }, { name => <Mister Cage> }, { name => <Mortal Kombat> };
+$t6.process('lookup', :users(@users));
+is $t6.process('lookup', :users(@users)), $wanted, 'Second get on already compiled template.';
+
+# vim: expandtab shiftwidth=4
