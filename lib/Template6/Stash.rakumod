@@ -36,7 +36,7 @@ method get($query, :$strict) {
     }
 
     # If nothing was found, and we're not in strict mode, we return the original query.
-    $strict ?? Nil !! $query
+    $strict ?? Empty !! $query
 }
 
 method update(*%hash) {

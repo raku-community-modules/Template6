@@ -148,7 +148,7 @@ method parse-for($left, $op, $right) {
         $loopname = $right;
     }
     q:to/RAKU/
-    for @($stash.get('\qq[$itemname]')) -> $\qq[$loopname] {
+    for @($stash.get('\qq[$itemname]', :strict)) -> $\qq[$loopname] {
         $stash.put('\qq[$loopname]', $\qq[$loopname]);
     RAKU
 }

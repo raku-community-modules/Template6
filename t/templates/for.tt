@@ -12,6 +12,10 @@
 [% for ol as li %]
 <li>[% li %]</li>
 [% end %]
+[% for li in missing %]
+<p>This block shouldn't be present at all</p>
+<li>[% li %]</li>
+[% end %]
 </ol>
 </body>
 </html>
