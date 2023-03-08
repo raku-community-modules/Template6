@@ -1,0 +1,57 @@
+use Test;
+use Template6;
+
+plan 2;
+
+my $t6-noreset = Template6.new;
+$t6-noreset.add-path: 't/templates';
+my $t6-reset = Template6.new: :reset;
+$t6-reset.add-path: 't/templates';
+
+my @ul = 'First', 'Second', 'Third';
+my @ol = 'One', 'Two', 'Three';
+# we know the result from 02-for.rakutest and we don't really care here anyway
+# it's an organic way to set the stash
+$t6-noreset.process('for', :title<For Test>, :@ul, :@ol);
+$t6-reset.process('for', :title<For Test>, :@ul, :@ol);
+
+
+my $wanted-noreset = "<html>
+<head>
+<title>For Test</title>
+</head>
+<body>
+<ul>
+<li>First</li>
+<li>Second</li>
+<li>Third</li>
+</ul>
+<ol>
+<li>Ain't</li>
+<li>Nobody</li>
+</ol>
+</body>
+</html>
+";
+
+my $wanted-reset = "<html>
+<head>
+<title>For Test</title>
+</head>
+<body>
+<ul>
+</ul>
+<ol>
+<li>Ain't</li>
+<li>Nobody</li>
+</ol>
+</body>
+</html>
+";
+
+@ol = <Ain't Nobody>;
+is $t6-noreset.process('for', :title<For Test>, :@ol), $wanted-noreset, 'Unmodified variable stays set.';
+is $t6-reset.process('for', :title<For Test>, :@ol), $wanted-reset, 'Unmodified variable gets reset.';
+
+
+# vim: expandtab shiftwidth=4

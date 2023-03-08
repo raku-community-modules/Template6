@@ -2,6 +2,9 @@ Revision history for Template6
 
 {{$NEXT}}
 
+0.11.3  2023-03-08T01:07:07+01:00
+    - implementing missing reset flag
+
 0.11.2  2023-03-07T10:26:57+01:00
     - do not fall back to bare words in for loops
     - missing identifier should result into an empty loop

@@ -56,4 +56,8 @@ method declone {
     $.parent || self
 }
 
+method reset {
+    %!data = Empty;
+}
+
 # vim: expandtab shiftwidth=4

@@ -7,7 +7,7 @@ use Template6::Provider::String;
 
 has $.service;       # The parent Service object.
 has $.parser;        # Our Parser object.
-has $.stash is rw;   # Our Stash object.
+has $.stash is rw handles <reset>;   # Our Stash object.
 
 has %.blocks;  # Currently known blocks.
 has @.block-cache;   # Known block tree (for nested contexts.)
