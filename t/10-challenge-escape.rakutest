@@ -1,0 +1,39 @@
+use Test;
+use Template6;
+
+my Template6 $t .= new();
+
+plan 5;
+
+$t.add-template('brackets_after_space_hardcoded',q:to<END>);
+ {{ foo }}
+END
+
+is $t.process('brackets_after_space_hardcoded').chomp, ' {{ foo }}', 'Brackets after a space, hardcoded.';
+
+$t.add-template('brackets_beginning_hardcoded',q:to<END>);
+{{ foo }}
+END
+
+is $t.process('brackets_beginning_hardcoded').chomp, '{{ foo }}', 'Brackets at the very beginning, hardcoded.';
+
+$t.add-template('unescape_attempt',Q:to<END>);
+\qq{{ foo }}
+END
+
+is $t.process('unescape_attempt').chomp, '\\qq{{ foo }}', 'Attempting to break out of literal quoting.';
+
+my $template-content = Q:to<END>;
+END1END2END3
+END1
+END2
+END4
+END
+$t.add-template('heredoc_terminal_attempt',$template-content);
+my $used-delimiter = $t.service.context.parser.get-safe-delimiter($template-content);
+
+
+is $t.process('heredoc_terminal_attempt').chomp, "END1END2END3\nEND1\nEND2\nEND4", 'Attempting to break out of heredoc.';
+is $used-delimiter, 'END3', 'The right delimiter was used in the internal form.';
+
+# vim: expandtab shiftwidth=4
