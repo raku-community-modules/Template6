@@ -207,6 +207,11 @@ method action($statement) {
         !! self.parse-get($name)
 }
 
+method get-safe-delimiter($raw-text) {
+    my Set() $raw-words = $raw-text.words;
+    (1..*).map('END' ~ *).first(* !(elem) $raw-words)
+}
+
 method compile($template) {
     my $script = q:to/RAKU/;
     return sub ($context) {
@@ -217,11 +222,16 @@ method compile($template) {
     my @segments = $template.split(/ \n? '[%' $<comment-signature>=('#'?) \s* $<tokens>=(.*?) \s* '%]' /, :v);
     for @segments -> $segment {
         if $segment ~~ Stringy {
-            my $string = $segment.subst('}}}}', '\}\}\}\}', :g);
-            $script ~= q:to/RAKU/;
-            $output ~= Q{{{{\qq[$string]}}}};
-            
+            my $safe-delimiter = self.get-safe-delimiter($segment);
+            # Please do not change the string generation logic
+            # without paying attention to the implications and
+            # changing the test cases appropriately
+            my $new-part = q:to/RAKU/;
+            $output ~= Q:to/\qq[$safe-delimiter]/.chomp;
+            \qq[$segment]
+            \qq[$safe-delimiter]
             RAKU
+            $script ~= $new-part;
         }
         elsif $segment ~~ Match && !~$segment<comment-signature> {
             my $statement = ~$segment<tokens>;
