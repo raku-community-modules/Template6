@@ -1,31 +1,34 @@
 unit class Template6::Parser;
 
 my @keywords = 'eq', 'ne', 'lt', 'gt', 'gte', 'lte';
+subset ControlState of Str where * (elem) <conditional for>;
+
 has $.context;
 has %!directive-handlers =
-    insert => -> *@defs {
+    insert => -> @, **@defs {
         my $localline = 'my $template = $context.get-template-text($tfile);' ~ "\n";
-        parse-template(@defs, $localline)
+        parse-template(@, @defs, $localline)
     },
-    include => -> *@defs {
+    include => -> @, **@defs {
         my $localline = 'my $template = $context.process($tfile, :localise, |%localdata);' ~ "\n";
-        parse-template(@defs, $localline)
+        parse-template(@, @defs, $localline)
     },
-    process => -> *@defs {
+    process => -> @, **@defs {
         my $localline = 'my $template = $context.process($tfile, |%localdata);' ~ "\n";
-        parse-template(@defs, $localline)
+        parse-template(@, @defs, $localline)
     },
-    call => -> Str:D $name {
+    call => -> @, Str:D $name {
         q:to/RAKU/
         $stash.get('\qq[$name]');
         RAKU
     },
     get => &parse-get,
     set => &parse-set,
-    default => -> *@values {
-        parse-set(:default, @values)
+    default => -> @, **@values {
+        parse-set(@, :default, @values);
     },
-    for => -> $left, $op, $right {
+    for => -> @control-stack, $left, $op, $right {
+        @control-stack.unshift('for');
         my $itemname;
         my $loopname;
         if ($op.lc eq '=' | 'in') {
@@ -41,62 +44,65 @@ has %!directive-handlers =
             $stash.put('\qq[$loopname]', $\qq[$loopname]);
         RAKU
     },
-    if => -> *@stmts {
-        parse-conditional('if', @stmts)
+    if => -> @control-stack, **@stmts {
+        parse-conditional(@control-stack, 'if', @stmts)
     },
-    unless => -> *@stmts {
-        parse-conditional('unless', @stmts)
+    unless => -> @control-stack, **@stmts {
+        parse-conditional(@control-stack, 'unless', @stmts)
     },
-    |(<elseif elsif> X=> -> *@stmts {
-        "\n}\n" ~ parse-conditional('elsif', @stmts)
+    |(<elseif elsif> X=> -> @control-stack, **@stmts {
+        "\n}\n" ~ parse-conditional(@control-stack, 'elsif', @stmts)
     }),
-    else => -> {
+    else => -> @ {
         q:b[\n} else {\n]
     },
-    end => -> {
+    end => -> @control-stack {
+        my ControlState $closed-directive = @control-stack.shift;
         "\n}\n"
     };
 
-## Incomplete method, supply the $localline which must define a variable called $template
-sub parse-template(@defs is copy, $localline) {
-    my $return = '';
-    my $parsing-templates = True;
+sub extract-template-names(@tokens) {
     my @templates;
-
-    while $parsing-templates && @defs {
-        @templates.push: @defs.shift;
-        if @defs && @defs[0] eq '+' {
-            @defs.shift;
+    my $parsing-templates = True;
+    while $parsing-templates && @tokens {
+        @templates.push: @tokens.shift;
+        if @tokens && @tokens[0] eq '+' {
+            @tokens.shift;
         }
         else {
             $parsing-templates = False;
         }
     }
+    @templates
+}
+
+sub resolve-value($value) {
+    given $value {
+            when / \" (.*?) \" | \' (.*?) \' / {
+                "'$0'"
+            }
+            when /^ \d+ ['.' \d+]? $/ {
+                "'$value.Numeric()'"
+            }    
+            default {
+                q[$stash.get('\qq[$value]')]
+            }
+        }
+}
+
+## Incomplete method, supply the $localline which must define a variable called $template
+sub parse-template(@, @defs is copy, $localline) {
+    my $return = '';
+    my @templates = extract-template-names(@defs);
     $return ~= q:to/RAKU/;
     my %localdata;
 
     RAKU
     for @defs -> $name, $op, $value {
-        $return ~= do given $value {
-            when / \" (.*?) \" | \' (.*?) \' / {
-                q:to/RAKU/
-                %localdata<\qq[$name]> = '\qq[$0]';
+        $return ~= q:to/RAKU/
+            %localdata<\qq[$name]> = \qq[&resolve-value($value)];
                 
-                RAKU
-            }
-            when /^ \d+ ['.' \d+]? $/ {
-                q:to/RAKU/
-                %localdata<\qq[$name]> = '\qq[$value.Numeric()]';
-                
-                RAKU
-            }    
-            default {
-                q:to/RAKU/
-                %localdata<\qq[$name]> = $stash.get('\qq[$value]');
-                
-                RAKU
-            }
-        }
+        RAKU
     }
 
     for @templates -> $template is rw {
@@ -120,13 +126,13 @@ sub parse-template(@defs is copy, $localline) {
     $return
 }
 
-sub parse-get(Str:D $name) {
+sub parse-get(@, Str:D $name) {
     q:to/RAKU/
     $output ~= $stash.get('\qq[$name]');
     RAKU
 }
 
-sub parse-set(:$default, *@values is copy) {
+sub parse-set(@, :$default, *@values is copy) {
     my $return = '';
     for @values -> $name, $op, $value {
         if $default {
@@ -135,26 +141,10 @@ sub parse-set(:$default, *@values is copy) {
 
             RAKU
         }
-        $return ~= do given $value {
-            when / \" (.*?) \" | \' (.*?) \' / {
-                q:to/RAKU/
-                $stash.put('\qq[$name]', '\qq[$0]');
+        $return ~= q:to/RAKU/;
+            $stash.put('\qq[$name]', \qq[&resolve-value($value)]);
 
-                RAKU
-            }
-            when /^ \d+ ['.' \d+]? $/ {
-                q:to/RAKU/
-                stash.put('\qq[$name]', \qq[$value.Numeric()]);
-
-                RAKU
-            }
-            default {
-                q:to/RAKU/
-                $stash.put('\qq[$name]', $stash.get('\qq[$value]'));
-
-                RAKU
-            }
-        }
+        RAKU
         if $default {
             $return ~= q:to/RAKU/;
             }
@@ -165,7 +155,8 @@ sub parse-set(:$default, *@values is copy) {
     $return
 }
 
-sub parse-conditional(Str:D $name, @tokens is copy) {
+sub parse-conditional(@control-stack, Str:D $name, @tokens is copy) {
+    @control-stack.unshift('conditional');
     for @tokens -> $token is rw {
         next if $token (elem) @keywords;
         next if $token ~~ /^ \d+ ['.' \d+]? $/; # TODO probably all numbers are good to go, not just integers
@@ -179,7 +170,7 @@ sub remove-comment(*@tokens --> List) {
     @tokens.toggle(* ne '#').cache
 }
 
-method !action($statement) {
+method !action(@control-stack, $statement) {
     my @stmts = $statement
       .lines
       .map({ remove-comment(.comb(/ \" .*? \" | \' .*? \' | \S+ /)) })
@@ -188,10 +179,10 @@ method !action($statement) {
 
     my $name = @stmts.shift.lc;
     $name (elem) %!directive-handlers
-      ?? %!directive-handlers{$name}(|@stmts)
+      ?? %!directive-handlers{$name}(@control-stack, |@stmts)
       !! @stmts.elems >= 2 && @stmts[0] eq '='
-        ?? parse-set($name, |@stmts)
-        !! parse-get($name)
+        ?? parse-set(@control-stack, $name, |@stmts)
+        !! parse-get(@control-stack, $name)
 }
 
 method get-safe-delimiter($raw-text) {
@@ -206,6 +197,7 @@ method compile($template) {
         my $output = '';
 
     RAKU
+    my @control-stack of ControlState;
     my @segments = $template.split(/ \n? '[%' $<comment-signature>=('#'?) \s* $<tokens>=(.*?) \s* '%]' /, :v);
     for @segments -> $segment {
         if $segment ~~ Stringy {
@@ -222,7 +214,7 @@ method compile($template) {
         }
         elsif $segment ~~ Match && !~$segment<comment-signature> {
             my $statement = ~$segment<tokens>;
-            $script ~= self!action($statement);
+            $script ~= self!action(@control-stack, $statement);
         }
     }
     $script ~= q:to/RAKU/;
