@@ -2,6 +2,9 @@ Revision history for Template6
 
 {{$NEXT}}
 
+0.11.5  2023-08-01T15:06:34+02:00
+    - cleaning up the structure/interface of the Parser class
+
 0.11.4  2023-03-20T16:04:05+01:00
     - changing escape strategy for verbatim parts of the template
 

@@ -1,10 +1,64 @@
 unit class Template6::Parser;
 
-has @!keywords = 'eq', 'ne', 'lt', 'gt', 'gte', 'lte';
+my @keywords = 'eq', 'ne', 'lt', 'gt', 'gte', 'lte';
 has $.context;
+has %!directive-handlers =
+    insert => -> *@defs {
+        my $localline = 'my $template = $context.get-template-text($tfile);' ~ "\n";
+        parse-template(@defs, $localline)
+    },
+    include => -> *@defs {
+        my $localline = 'my $template = $context.process($tfile, :localise, |%localdata);' ~ "\n";
+        parse-template(@defs, $localline)
+    },
+    process => -> *@defs {
+        my $localline = 'my $template = $context.process($tfile, |%localdata);' ~ "\n";
+        parse-template(@defs, $localline)
+    },
+    call => -> Str:D $name {
+        q:to/RAKU/
+        $stash.get('\qq[$name]');
+        RAKU
+    },
+    get => &parse-get,
+    set => &parse-set,
+    default => -> *@values {
+        parse-set(:default, @values)
+    },
+    for => -> $left, $op, $right {
+        my $itemname;
+        my $loopname;
+        if ($op.lc eq '=' | 'in') {
+            $itemname = $right;
+            $loopname = $left;
+        }
+        else {
+            $itemname = $left;
+            $loopname = $right;
+        }
+        q:to/RAKU/
+        for @($stash.get('\qq[$itemname]', :strict)) -> $\qq[$loopname] {
+            $stash.put('\qq[$loopname]', $\qq[$loopname]);
+        RAKU
+    },
+    if => -> *@stmts {
+        parse-conditional('if', @stmts)
+    },
+    unless => -> *@stmts {
+        parse-conditional('unless', @stmts)
+    },
+    |(<elseif elsif> X=> -> *@stmts {
+        "\n}\n" ~ parse-conditional('elsif', @stmts)
+    }),
+    else => -> {
+        q:b[\n} else {\n]
+    },
+    end => -> {
+        "\n}\n"
+    };
 
 ## Incomplete method, supply the $localline which must define a variable called $template
-method !parse-template(@defs is copy, $localline) {
+sub parse-template(@defs is copy, $localline) {
     my $return = '';
     my $parsing-templates = True;
     my @templates;
@@ -66,34 +120,13 @@ method !parse-template(@defs is copy, $localline) {
     $return
 }
 
-method parse-insert(*@defs) {
-    my $localline = 'my $template = $context.get-template-text($tfile);' ~ "\n";
-    self!parse-template(@defs, $localline)
-}
-
-method parse-include(*@defs) {
-    my $localline = 'my $template = $context.process($tfile, :localise, |%localdata);' ~ "\n";
-    self!parse-template(@defs, $localline)
-}
-
-method parse-process(*@defs) {
-    my $localline = 'my $template = $context.process($tfile, |%localdata);' ~ "\n";
-    self!parse-template(@defs, $localline)
-}
-
-method parse-get(Str:D $name) {
+sub parse-get(Str:D $name) {
     q:to/RAKU/
     $output ~= $stash.get('\qq[$name]');
     RAKU
 }
 
-method parse-call(Str:D $name) {
-    q:to/RAKU/
-    $stash.get('\qq[$name]');
-    RAKU
-}
-
-method parse-set(:$default, *@values is copy) {
+sub parse-set(:$default, *@values is copy) {
     my $return = '';
     for @values -> $name, $op, $value {
         if $default {
@@ -132,79 +165,33 @@ method parse-set(:$default, *@values is copy) {
     $return
 }
 
-method parse-default(*@values) {
-    self.parse-set(:default, @values)
-}
-
-method parse-for($left, $op, $right) {
-    my $itemname;
-    my $loopname;
-    if ($op.lc eq '=' | 'in') {
-        $itemname = $right;
-        $loopname = $left;
+sub parse-conditional(Str:D $name, @tokens is copy) {
+    for @tokens -> $token is rw {
+        next if $token (elem) @keywords;
+        next if $token ~~ /^ \d+ ['.' \d+]? $/; # TODO probably all numbers are good to go, not just integers
+        $token .= subst(/^ (\w+) $/, -> $word { "\$stash.get('$word', :strict)" });
     }
-    else {
-        $itemname = $left;
-        $loopname = $right;
-    }
-    q:to/RAKU/
-    for @($stash.get('\qq[$itemname]', :strict)) -> $\qq[$loopname] {
-        $stash.put('\qq[$loopname]', $\qq[$loopname]);
-    RAKU
-}
-
-method !parse-conditional(Str:D $name, @stmts is copy) {
-    for @stmts -> $stmt is rw {
-        next if @!keywords.grep($stmt);
-        next if $stmt ~~ /^ \d+ $/;
-        $stmt .= subst(/^ (\w+) $/, -> $word { "\$stash.get('$word', :strict)" });
-    }
-    my $statement = @stmts.join(' ');
+    my $statement = @tokens.join(' ');
     "$name $statement \{\n"
 }
 
-method parse-if(*@stmts) {
-    self!parse-conditional('if', @stmts)
-}
-
-method parse-unless(*@stmts) {
-    self!parse-conditional('unless', @stmts)
-}
-
-method parse-elsif(*@stmts) {
-    "\n}\n" ~ self!parse-conditional('elsif', @stmts)
-}
-
-method parse-elseif(*@stmts) {
-    self.parse-elsif(|@stmts)
-}
-
-method parse-else() {
-    q:b[\n} else {\n]
-}
-
-method parse-end {
-    "\n}\n"
-}
-
-method remove-comment(*@tokens --> List) {
+sub remove-comment(*@tokens --> List) {
     @tokens.toggle(* ne '#').cache
 }
 
-method action($statement) {
+method !action($statement) {
     my @stmts = $statement
       .lines
-      .map({ self.remove-comment(.comb(/ \" .*? \" | \' .*? \' | \S+ /)) })
+      .map({ remove-comment(.comb(/ \" .*? \" | \' .*? \' | \S+ /)) })
       .flat;
     return '' unless @stmts;
 
     my $name = @stmts.shift.lc;
-    my $method = 'parse-' ~ $name;
-    self.can($method)
-      ?? self."$method"(|@stmts)
+    $name (elem) %!directive-handlers
+      ?? %!directive-handlers{$name}(|@stmts)
       !! @stmts.elems >= 2 && @stmts[0] eq '='
-        ?? self.parse-set($name, |@stmts)
-        !! self.parse-get($name)
+        ?? parse-set($name, |@stmts)
+        !! parse-get($name)
 }
 
 method get-safe-delimiter($raw-text) {
@@ -235,7 +222,7 @@ method compile($template) {
         }
         elsif $segment ~~ Match && !~$segment<comment-signature> {
             my $statement = ~$segment<tokens>;
-            $script ~= self.action($statement);
+            $script ~= self!action($statement);
         }
     }
     $script ~= q:to/RAKU/;
