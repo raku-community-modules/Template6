@@ -28,9 +28,6 @@ Inspired by Template Toolkit from Perl,
 Template6 is a simple template engine designed to be
 a content-neutral template language.
 
-I also intend to borrow features and ideas from
-my own Flower and Garden projects.
-
 This project does not intend to create an exact clone of
 Template Toolkit. Some features from TT are not planned for
 inclusion, and likewise, some feature will be included that

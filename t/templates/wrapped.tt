@@ -1,0 +1,2 @@
+[% title = 'peculiarity' %]
+<p>This '[% title %]' should appear up there.</p>

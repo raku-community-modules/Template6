@@ -17,8 +17,20 @@ my $wanted = "<html>
 ";
 
 is $t6.process('insert'), $wanted, 'INSERT statement';
-is $t6.process('include', :name<World>), $wanted, 'INCLUDE statement';
 is $t6.process('include2'), $wanted, 'INCLUDE statement with local template data';
+
+$wanted = "<html>
+<head>
+<title>Hello Tomorrow</title>
+</head>
+<body>
+<h1>Hello Tomorrow</h1>
+<h1>Hello World</h1>
+</body>
+</html>
+";
+
+is $t6.process('include', :name<Tomorrow>, :included<inserted>), $wanted, 'INCLUDE statement';
 
 $wanted = "<html>
 <head>

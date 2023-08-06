@@ -105,12 +105,10 @@ sub parse-template(@, @defs is copy, $localline) {
         RAKU
     }
 
-    for @templates -> $template is rw {
-        $template ~~ s/^[\"|\']//;
-        $template ~~ s/[\"|\']$//;
+    for @templates -> $template {
         $return ~= q:to/RAKU/;
         {
-            my $tfile = $stash.get('\qq[$template]');
+            my $tfile = \qq[&resolve-value($template)];
 
         RAKU
         $return ~= $localline;

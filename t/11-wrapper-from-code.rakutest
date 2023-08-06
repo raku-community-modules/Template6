@@ -1,0 +1,36 @@
+use Test;
+use Template6;
+
+plan 3;
+
+my $t6 = Template6.new: wrappers => ['wrapper'];
+$t6.add-path: 't/templates';
+is $t6.service.wrappers[0], 'wrapper', 'Wrapper set through Template6 constructor.';
+
+my $wanted = "<html>
+<head>
+<title>Not much...</title>
+</head>
+<body>
+<h1>Humble content.</h1>
+<h1>Hello Everybody</h1>
+</body>
+</html>
+";
+
+is $t6.process('included', :name<Everybody>), $wanted, 'Wrap without variable inside.';
+
+$wanted = "<html>
+<head>
+<title>Here we go with peculiarity</title>
+</head>
+<body>
+<h1>Humble content.</h1>
+<p>This 'peculiarity' should appear up there.</p>
+</body>
+</html>
+";
+
+is $t6.process('wrapped'), $wanted, 'Wrap with variable set inside.';
+
+# vim: expandtab shiftwidth=4

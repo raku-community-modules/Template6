@@ -4,5 +4,6 @@
 </head>
 <body>
 [% INCLUDE "included" %]
+[% INCLUDE included %]
 </body>
 </html>

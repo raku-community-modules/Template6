@@ -2,6 +2,10 @@ Revision history for Template6
 
 {{$NEXT}}
 
+0.12.0  2023-08-07T00:38:31+02:00
+    - wrappers option can be used from code
+    - minor refactoring
+
 0.11.5  2023-08-01T15:06:34+02:00
     - cleaning up the structure/interface of the Parser class
 
