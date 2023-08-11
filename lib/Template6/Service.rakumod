@@ -27,10 +27,10 @@ submethod BUILD(*%args) {
 }
 
 ## Process a template using a data provider.
-method process(Str:D $template-name, *%params) {
+method process(Template6::Context::Processable $template-name, *%params) {
     my $output = '';
     $.context.reset if $!reset;
-    %params<template> = $template-name;
+    %params<template> = $template-name.Str;
     ## First, anything in our pre-process queue.
     for @.pre-process -> $pre-template {
         $output ~= $.context.process($pre-template, |%params);

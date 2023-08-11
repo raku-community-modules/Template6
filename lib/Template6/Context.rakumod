@@ -5,6 +5,8 @@ use Template6::Stash;
 use Template6::Provider::File;
 use Template6::Provider::String;
 
+subset Processable where Str:D | IO::Path:D;
+
 has $.service;       # The parent Service object.
 has $.parser;        # Our Parser object.
 has $.stash is rw handles <reset>;   # Our Stash object.
@@ -56,7 +58,11 @@ method add-template($name, $template --> Nil) {
     .store($name, $template) with %!providers<string>;
 }
 
-method get-template-text(Str:D $name is copy) {
+multi method get-template-text(IO::Path:D $path) {
+    $path.slurp
+}
+
+multi method get-template-text(Str:D $name is copy) {
     my $prefix;
     my @providers;
     if $name ~~ s/^(\w+)'::'// {
@@ -77,30 +83,27 @@ method get-template-text(Str:D $name is copy) {
     $template
 }
 
-method get-template-block(Str:D $name) {
-    .return with %.blocks{$name};
+method get-template-block(Processable $template-descriptor) {
+    .return with %.blocks{$template-descriptor}{$template-descriptor.^name};
     for @.block-cache -> $known-blocks {
-        .return with $known-blocks{$name};
+        .return with $known-blocks{$template-descriptor}{$template-descriptor.^name};
     }
 
-    my $template = self.get-template-text($name);
+    my $template = self.get-template-text($template-descriptor);
 
+    die "Invalid template '$_'" without $template;
     ## If we have a template, store it.
-    with $template {
+    given $template {
         if $_ !~~ Callable {
             $_ = $.parser.compile($_);
         }
-        %.blocks{$name} = $_;
+        %.blocks{$template-descriptor}{$template-descriptor.^name} = $_;
     }
     $template
 }
 
-method process(Str:D $name, :$localise = False, *%params) {
-    my $template = $name;
-    if $template ~~ Str {
-        $template = self.get-template-block($template);
-        die "Invalid template '$name'" without $template;
-    }
+method process(Processable $template-descriptor, :$localise = False, *%params) {
+    my &template-applier = self.get-template-block($template-descriptor);
     if $localise {
         self.localise(|%params);
     }
@@ -111,7 +114,7 @@ method process(Str:D $name, :$localise = False, *%params) {
 #    say "<template>\n$template\n</template>";
 #    my $output = eval $template;
     ## New style templates are closures.
-    my $output = $template(self);
+    my $output = template-applier(self);
     if $localise {
         self.delocalise();
     }

@@ -1,0 +1,49 @@
+use Test;
+use Template6;
+
+plan 3;
+
+my $t6 = Template6.new;
+
+my $wanted = "<html>
+<head>
+<title>Hello World</title>
+</head>
+<body>
+<h1>Hello World</h1>
+</body>
+</html>
+";
+
+
+is $t6.process('t/templates/default.tt'.IO, :name<World>), $wanted, 'Processing raw file.';
+
+$wanted = "<html>
+<head>
+<title>Hello World</title>
+</head>
+<body>
+<h1>Hello Universe</h1>
+</body>
+</html>
+";
+
+is $t6.process('t/templates/default.tt'.IO, :name<Universe>), $wanted, 'Re-processing raw file.';
+
+$t6 = Template6.new: wrappers => ['wrapper'];
+$t6.add-path: 't/templates';
+
+$wanted = "<html>
+<head>
+<title>Here we go with peculiarity</title>
+</head>
+<body>
+<h1>Humble content.</h1>
+<p>This 'peculiarity' should appear up there.</p>
+</body>
+</html>
+";
+
+is $t6.process('t/templates/wrapped.tt'.IO), $wanted, 'Wrapper with name, base template with path.';
+
+# vim: expandtab shiftwidth=4
