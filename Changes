@@ -2,6 +2,9 @@ Revision history for Template6
 
 {{$NEXT}}
 
+0.14.0  2023-08-17T02:59:45+02:00
+    - making directives that are always for content generation keep the line break
+
 0.13.0  2023-08-12T01:37:50+02:00
     - add processing for file paths as well
 

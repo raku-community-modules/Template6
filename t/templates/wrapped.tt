@@ -1,2 +1,1 @@
-[% title = 'peculiarity' %]
-<p>This '[% title %]' should appear up there.</p>
+[% title = 'peculiarity' %]<p>This '[% title %]' should appear up there.</p>

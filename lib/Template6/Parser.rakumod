@@ -5,29 +5,29 @@ subset ControlState of Str where * (elem) <conditional for>;
 
 has $.context;
 has %!directive-handlers =
-    insert => -> @, **@defs {
+    insert => (-> @, **@defs {
         my $localline = 'my $template = $context.get-template-text($tfile);' ~ "\n";
         parse-template(@, @defs, $localline)
-    },
-    include => -> @, **@defs {
+    }, True),
+    include => (-> @, **@defs {
         my $localline = 'my $template = $context.process($tfile, :localise, |%localdata);' ~ "\n";
         parse-template(@, @defs, $localline)
-    },
-    process => -> @, **@defs {
+    }, False),
+    process => (-> @, **@defs {
         my $localline = 'my $template = $context.process($tfile, |%localdata);' ~ "\n";
         parse-template(@, @defs, $localline)
-    },
-    call => -> @, Str:D $name {
+    }, False),
+    call => (-> @, Str:D $name {
         q:to/RAKU/
         $stash.get('\qq[$name]');
         RAKU
-    },
-    get => &parse-get,
-    set => &parse-set,
-    default => -> @, **@values {
+    }, True),
+    get => (&parse-get, True),
+    set => (&parse-set, False),
+    default => (-> @, **@values {
         parse-set(@, :default, @values);
-    },
-    for => -> @control-stack, $left, $op, $right {
+    }, False),
+    for => (-> @control-stack, $left, $op, $right {
         @control-stack.unshift('for');
         my $itemname;
         my $loopname;
@@ -43,23 +43,23 @@ has %!directive-handlers =
         for @($stash.get('\qq[$itemname]', :strict)) -> $\qq[$loopname] {
             $stash.put('\qq[$loopname]', $\qq[$loopname]);
         RAKU
-    },
-    if => -> @control-stack, **@stmts {
+    }, False),
+    if => (-> @control-stack, **@stmts {
         parse-conditional(@control-stack, 'if', @stmts)
-    },
-    unless => -> @control-stack, **@stmts {
+    }, False),
+    unless => (-> @control-stack, **@stmts {
         parse-conditional(@control-stack, 'unless', @stmts)
-    },
-    |(<elseif elsif> X=> -> @control-stack, **@stmts {
+    }, False),
+    |(<elseif elsif> X=> $(-> @control-stack, **@stmts {
         "\n}\n" ~ parse-conditional(@control-stack, 'elsif', @stmts)
-    }),
-    else => -> @ {
+    }, False)),
+    else => (-> @ {
         q:b[\n} else {\n]
-    },
-    end => -> @control-stack {
+    }, False),
+    end => (-> @control-stack {
         my ControlState $closed-directive = @control-stack.shift;
         "\n}\n"
-    };
+    }, False);
 
 sub extract-template-names(@tokens) {
     my @templates;
@@ -168,19 +168,31 @@ sub remove-comment(*@tokens --> List) {
     @tokens.toggle(* ne '#').cache
 }
 
-method !action(@control-stack, $statement) {
+method !action(@control-stack, $statement, $prefix-linebreak) {
     my @stmts = $statement
       .lines
       .map({ remove-comment(.comb(/ \" .*? \" | \' .*? \' | \S+ /)) })
       .flat;
     return '' unless @stmts;
 
+    
     my $name = @stmts.shift.lc;
-    $name (elem) %!directive-handlers
-      ?? %!directive-handlers{$name}(@control-stack, |@stmts)
-      !! @stmts.elems >= 2 && @stmts[0] eq '='
-        ?? parse-set(@control-stack, $name, |@stmts)
-        !! parse-get(@control-stack, $name)
+    my $current-directive = %!directive-handlers{$name};
+    without $current-directive {
+        @stmts.unshift($name);
+        $_ = @stmts.elems >= 3 && @stmts[1] eq '='
+            ?? %!directive-handlers<set>
+            !! %!directive-handlers<get>;
+    }
+
+    my $result;
+    if $prefix-linebreak && $current-directive[1] {
+        $result ~= q:to/RAKU/;
+        $output ~= Q<\qq[$prefix-linebreak]>;
+        RAKU
+    }
+    $result ~= $current-directive[0](@control-stack, |@stmts);
+    $result
 }
 
 method get-safe-delimiter($raw-text) {
@@ -196,7 +208,7 @@ method compile($template) {
 
     RAKU
     my @control-stack of ControlState;
-    my @segments = $template.split(/ \n? '[%' $<comment-signature>=('#'?) \s* $<tokens>=(.*?) \s* '%]' /, :v);
+    my @segments = $template.split(/ $<prefix-linebreak>=(\n?) '[%' $<comment-signature>=('#'?) \s* $<tokens>=(.*?) \s* '%]' /, :v);
     for @segments -> $segment {
         if $segment ~~ Stringy {
             my $safe-delimiter = self.get-safe-delimiter($segment);
@@ -212,14 +224,14 @@ method compile($template) {
         }
         elsif $segment ~~ Match && !~$segment<comment-signature> {
             my $statement = ~$segment<tokens>;
-            $script ~= self!action(@control-stack, $statement);
+            $script ~= self!action(@control-stack, $statement, ~$segment<prefix-linebreak>);
         }
     }
     $script ~= q:to/RAKU/;
         return $output;
     }
     RAKU
-#    $*ERR.say: "<DEBUG:template>\n$script\n</DEBUG:template>";
+    #note "<DEBUG:template>\n$script\n</DEBUG:template>";
     $script.subst( / 'my %localdata;' /, '', :nd(2..*) ).EVAL
 }
 

@@ -3,7 +3,9 @@
 <title>Hello [% name %]</title>
 </head>
 <body>
+
 [% INCLUDE "included" %]
+
 [% INCLUDE included %]
 </body>
 </html>
