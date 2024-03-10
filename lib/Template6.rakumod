@@ -37,22 +37,22 @@ are not in TT. Not all features will work the same either.
 
 =head3 GET and SET statements, including implicit versions.
 
-=item [% get varname %]
-=item [% varname %]
-=item [% set varname = value %]
-=item [% varname = value %]
+=item C<[% get varname %]>
+=item C<[% varname %]>
+=item C<[% set varname = value %]>
+=item C<[% varname = value %]>
 
 =head3 FOR statement.
 
 This replaces the FOREACH statement in TT2.
 It can be used in one of four ways:
 
-=item [% for listname as itemname %]
-=item [% for listname -> itemname %]
-=item [% for itemname in listname %]
-=item [% for itemname = listname %]
+=item C<[% for listname as itemname %]>
+=item C<<[% for listname -> itemname %]>>
+=item C<[% for itemname in listname %]>
+=item C<[% for itemname = listname %]>
 
-If used with Hashes, you'll need to query the .key or .value accessors.
+If used with Hashes, you'll need to query the C<.key> or C<.value> accessors.
 
 =head3 IF/ELSIF/ELSE/UNLESS statements.
 
@@ -85,7 +85,7 @@ These are very simplistic at the moment, but work for basic tests.
 =item Add 'absolute' and 'relative' options to Template6::Provider::File
 =item Whitespace control
 =item Precompiled/cached templates
-=item Tag styles (limited to definable start_tag and end_tag)
+=item Tag styles (limited to definable C<start_tag> and C<end_tag>)
 
 =head3 Long Term Goals
 
