@@ -15,8 +15,9 @@ use Template6;
 DESCRIPTION
 ===========
 
-Inspired by Template Toolkit from Perl, Template6 is a simple template
-engine designed to be a content-neutral template language.
+Inspired by [Template Toolkit](https://metacpan.org/pod/Template::Toolkit)
+from Perl, Template6 is a simple template engine designed to be a
+content-neutral template language.
 
 This project does not intend to create an exact clone of Template Toolkit.
 Some features from TT are not planned for inclusion, and likewise, some
