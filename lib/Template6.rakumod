@@ -82,7 +82,7 @@ These are very simplistic at the moment, but work for basic tests.
 =item WRAPPER statement
 =item block statements
 =item given/when statements
-=item Add 'absolute' and 'relative' options to Template6::Provider::File
+=item Add 'absolute' and 'relative' options to L<Template6::Provider::File|lib/Template6/Provider/File.rakumod>
 =item Whitespace control
 =item Precompiled/cached templates
 =item Tag styles (limited to definable start_tag and end_tag)
@@ -100,7 +100,7 @@ These are very simplistic at the moment, but work for basic tests.
 =head2 Possible future directions
 
 I would also like to investigate the potential for an alternative to
-Template6::Parser that generates Raku closures without the use of EVAL.
+L<Template6::Parser|lib/Template6/Parser.rakumod> that generates Raku closures without the use of EVAL.
 This would be far trickier, and would not be compatible with the
 precompiled templates, but would be an interesting exercise nonetheless.
 
