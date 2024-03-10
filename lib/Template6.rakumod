@@ -24,7 +24,7 @@ use Template6;
 
 =head1 DESCRIPTION
 
-Inspired by Template Toolkit from Perl,
+Inspired by L<Template Toolkit|https://metacpan.org/pod/Template::Toolkit> from Perl,
 Template6 is a simple template engine designed to be
 a content-neutral template language.
 
