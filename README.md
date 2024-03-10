@@ -15,9 +15,13 @@ use Template6;
 DESCRIPTION
 ===========
 
-Inspired by Template Toolkit from Perl, Template6 is a simple template engine designed to be a content-neutral template language.
+Inspired by Template Toolkit from Perl, Template6 is a simple template
+engine designed to be a content-neutral template language.
 
-This project does not intend to create an exact clone of Template Toolkit. Some features from TT are not planned for inclusion, and likewise, some feature will be included that are not in TT. Not all features will work the same either.
+This project does not intend to create an exact clone of Template Toolkit.
+Some features from TT are not planned for inclusion, and likewise, some
+feature will be included that are not in TT. Not all features will work the
+same either.
 
 Currently implemented features
 ------------------------------
@@ -114,7 +118,10 @@ TODO
 Possible future directions
 --------------------------
 
-I would also like to investigate the potential for an alternative to Template6::Parser that generates Raku closures without the use of EVAL. This would be far trickier, and would not be compatible with the precompiled templates, but would be an interesting exercise nonetheless.
+I would also like to investigate the potential for an alternative to
+Template6::Parser that generates Raku closures without the use of EVAL. This
+would be far trickier, and would not be compatible with the precompiled
+templates, but would be an interesting exercise nonetheless.
 
 AUTHOR
 ======
@@ -128,5 +135,6 @@ Copyright 2012 - 2017 Timothy Totten
 
 Copyright 2018 - 2023 Raku Community
 
-This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
+This library is free software; you can redistribute it and/or modify it
+under the Artistic License 2.0.
 
