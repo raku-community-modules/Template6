@@ -1,19 +1,16 @@
 [![Actions Status](https://github.com/raku-community-modules/Template6/actions/workflows/test.yml/badge.svg)](https://github.com/raku-community-modules/Template6/actions)
 
-NAME
-====
+# NAME
 
 Template6 - A Template Engine for Raku
 
-SYNOPSIS
-========
+# SYNOPSIS
 
 ```raku
 use Template6;
 ```
 
-DESCRIPTION
-===========
+# DESCRIPTION
 
 Inspired by Template Toolkit from Perl, Template6 is a simple template
 engine designed to be a content-neutral template language.
@@ -23,8 +20,7 @@ Some features from TT are not planned for inclusion, and likewise, some
 feature will be included that are not in TT. Not all features will work the
 same either.
 
-Currently implemented features
-------------------------------
+## Currently implemented features
 
 ### GET and SET statements, including implicit versions.
 
@@ -60,8 +56,7 @@ These are very simplistic at the moment, but work for basic tests.
 
   * INSERT, INCLUDE and PROCESS statements.
 
-Differences with Template Toolkit
----------------------------------
+## Differences with Template Toolkit
 
   * You should use explicit quotes, including in INSERT/INCLUDE/PROCESS directives.
 
@@ -73,15 +68,13 @@ Differences with Template Toolkit
 
   * Anything not yet implemented (see TODO below.)
 
-Caveats
--------
+## Caveats
 
   * Whitespace control is not implemented, so some things are fairly odd. See TODO.
 
   * A lot of little nit-picky stuff, likely related to the whitespace issue.
 
-TODO
-----
+## TODO
 
 ### Short Term Goals
 
@@ -115,21 +108,18 @@ TODO
 
   * Macros, plugins, etc.
 
-Possible future directions
---------------------------
+## Possible future directions
 
 I would also like to investigate the potential for an alternative to
 Template6::Parser that generates Raku closures without the use of EVAL. This
 would be far trickier, and would not be compatible with the precompiled
 templates, but would be an interesting exercise nonetheless.
 
-AUTHOR
-======
+# AUTHOR
 
 Timothy Totten
 
-COPYRIGHT AND LICENSE
-=====================
+# COPYRIGHT AND LICENSE
 
 Copyright 2012 - 2017 Timothy Totten
 
