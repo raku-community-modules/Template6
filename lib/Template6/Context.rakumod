@@ -91,7 +91,7 @@ method get-template-block(Processable $template-descriptor) {
 
     my $template = self.get-template-text($template-descriptor);
 
-    die "Invalid template '$_'" without $template;
+    die "Invalid template '{$template-descriptor}'" without $template;
     ## If we have a template, store it.
     given $template {
         if $_ !~~ Callable {
