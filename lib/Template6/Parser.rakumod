@@ -157,8 +157,12 @@ sub parse-conditional(@control-stack, Str:D $name, @tokens is copy) {
     @control-stack.unshift('conditional');
     for @tokens -> $token is rw {
         next if $token (elem) @keywords;
-        next if $token ~~ /^ \d+ ['.' \d+]? $/; # TODO probably all numbers are good to go, not just integers
-        $token .= subst(/^ ([\w|\-]+) $/, -> $word { "\$stash.get('$word', :strict)" });
+        # TODO probably all numbers are good to go, not just integers
+        next if $token ~~ /^ \d+ ['.' \d+]? $/;
+        # If the token is a string, we need to resolve it to a stash lookup.
+        next if $token ~~ / \" .*? \" | \' .*? \' /;
+
+        $token .= subst(/^ ([\w|\-|.]+) $/, -> $word { "\$stash.get('$word', :strict)" });
     }
     my $statement = @tokens.join(' ');
     "$name $statement \{\n"
