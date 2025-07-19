@@ -128,13 +128,17 @@ AUTHOR
 
 Timothy Totten
 
+MANTAINER
+======
+
+David Romero
+
 COPYRIGHT AND LICENSE
 =====================
 
 Copyright 2012 - 2017 Timothy Totten
 
-Copyright 2018 - 2023 Raku Community
+Copyright 2018 - 2025 Raku Community
 
 This library is free software; you can redistribute it and/or modify it
 under the Artistic License 2.0.
-

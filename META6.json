@@ -1,5 +1,5 @@
 {
-  "auth": "zef:raku-community-modules",
+  "auth": "zef:davidromero55",
   "authors": [
     "Timothy Totten"
   ],
@@ -23,7 +23,7 @@
   },
   "resources": [
   ],
-  "source-url": "git://github.com/raku-community-modules/Template6.git",
+  "source-url": "https://github.com/davidromero55/Template6",
   "tags": [
     "TEMPLATE",
     "TT",
@@ -31,5 +31,5 @@
   ],
   "test-depends": [
   ],
-  "version": "0.14.0"
+  "version": "0.15.0"
 }
