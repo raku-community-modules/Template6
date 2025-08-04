@@ -2,6 +2,15 @@ Revision history for Template6
 
 {{$NEXT}}
 
+0.16.0 2025-08-03T01:37:50+02:00
+    - Add negation symbol and numeric comparison operators.
+    - Pass all tests.
+    - Fix a bug with the stash lookup in Template6::Parser.
+
+0.15.0 2025-07-18T01:37:50+02:00
+    - Add support for vars using - in their names.
+    - Better user message for unexisting templates.
+
 0.14.0  2023-08-17T02:59:45+02:00
     - making directives that are always for content generation keep the line break
 
