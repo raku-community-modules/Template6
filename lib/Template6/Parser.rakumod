@@ -1,6 +1,6 @@
 unit class Template6::Parser;
 
-my @keywords = 'eq', 'ne', 'lt', 'gt', 'gte', 'lte';
+my @keywords = '!','eq', 'ne', 'lt', 'gt', 'gte', 'lte','<', '>', '<=', '>=', '==', '!=';
 subset ControlState of Str where * (elem) <conditional for>;
 
 has $.context;
