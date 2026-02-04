@@ -1,8 +1,9 @@
 <html>
 <head>
-<title>Hello [% get name %]</title>
+<title>Hello [% get name %] ([% get longer-name %])</title>
 </head>
 <body>
 <h1>Hello [% name %]</h1>
+<p>...or should I say: [% longer-name %]?</p>
 </body>
 </html>

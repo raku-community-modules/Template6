@@ -2,11 +2,14 @@
 <head>
 [% DEFAULT
    name  = 'Moon' 
+   longer-name = 'Little Cosmic Rock'
    title = 'Hello World' 
+   longer-title = 'OurPlaneOfExistence'
 %]
-<title>[% title %]</title>
+<title>[% title %] ([% longer-title %])</title>
 </head>
 <body>
 <h1>Hello [% name %]</h1>
+<p>...or should I say: [% longer-name %]?</p>
 </body>
 </html>

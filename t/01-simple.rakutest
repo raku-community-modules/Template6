@@ -8,28 +8,30 @@ $t6.add-path: 't/templates';
 
 my $wanted = "<html>
 <head>
-<title>Hello World</title>
+<title>Hello World (OurPlaneOfExistence)</title>
 </head>
 <body>
 <h1>Hello World</h1>
+<p>...or should I say: OurPlaneOfExistence?</p>
 </body>
 </html>
 ";
 
-is $t6.process('get', :name<World>), $wanted, 'Get statement.';
+is $t6.process('get', :name<World>, :longer-name<OurPlaneOfExistence>), $wanted, 'Get statement.';
 is $t6.process('set'), $wanted, 'Set statement.';
-is $t6.process('default', :name<World>), $wanted, 'Default statement.';
+is $t6.process('default', :name<World>, :longer-name<OurPlaneOfExistence>), $wanted, 'Default statement.';
 
 $wanted = "<html>
 <head>
-<title>Hello Universe</title>
+<title>Hello Universe (TheTotalityOfEverything)</title>
 </head>
 <body>
 <h1>Hello Universe</h1>
+<p>...or should I say: TheTotalityOfEverything?</p>
 </body>
 </html>
 ";
 
-is $t6.process('get', :name<Universe>), $wanted, 'Second get on already compiled template.';
+is $t6.process('get', :name<Universe>, :longer-name<TheTotalityOfEverything>), $wanted, 'Second get on already compiled template.';
 
 # vim: expandtab shiftwidth=4

@@ -23,7 +23,7 @@
   },
   "resources": [
   ],
-  "source-url": "git://github.com/raku-community-modules/Template6.git",
+  "source-url": "https://github.com/raku-community-modules/Template6.git",
   "tags": [
     "TEMPLATE",
     "TT",
@@ -31,5 +31,5 @@
   ],
   "test-depends": [
   ],
-  "version": "0.14.0"
+  "version": "0.15.0"
 }

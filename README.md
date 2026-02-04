@@ -15,40 +15,36 @@ use Template6;
 DESCRIPTION
 ===========
 
-Inspired by Template Toolkit from Perl, Template6 is a simple template
-engine designed to be a content-neutral template language.
+Inspired by [Template Toolkit](https://metacpan.org/pod/Template::Toolkit) from Perl, Template6 is a simple template engine designed to be a content-neutral template language.
 
-This project does not intend to create an exact clone of Template Toolkit.
-Some features from TT are not planned for inclusion, and likewise, some
-feature will be included that are not in TT. Not all features will work the
-same either.
+This project does not intend to create an exact clone of Template Toolkit. Some features from TT are not planned for inclusion, and likewise, some feature will be included that are not in TT. Not all features will work the same either.
 
 Currently implemented features
 ------------------------------
 
 ### GET and SET statements, including implicit versions.
 
-  * [% get varname %]
+  * `[% get varname %]`
 
-  * [% varname %]
+  * `[% varname %]`
 
-  * [% set varname = value %]
+  * `[% set varname = value %]`
 
-  * [% varname = value %]
+  * `[% varname = value %]`
 
 ### FOR statement.
 
 This replaces the FOREACH statement in TT2. It can be used in one of four ways:
 
-  * [% for listname as itemname %]
+  * `[% for listname as itemname %]`
 
-  * [% for listname -> itemname %]
+  * `[% for listname -> itemname %]`
 
-  * [% for itemname in listname %]
+  * `[% for itemname in listname %]`
 
-  * [% for itemname = listname %]
+  * `[% for itemname = listname %]`
 
-If used with Hashes, you'll need to query the .key or .value accessors.
+If used with Hashes, you'll need to query the `.key` or `.value` accessors.
 
 ### IF/ELSIF/ELSE/UNLESS statements.
 
@@ -91,13 +87,13 @@ TODO
 
   * given/when statements
 
-  * Add 'absolute' and 'relative' options to Template6::Provider::File
+  * Add 'absolute' and 'relative' options to [Template6::Provider::File](lib/Template6/Provider/File.rakumod)
 
   * Whitespace control
 
   * Precompiled/cached templates
 
-  * Tag styles (limited to definable start_tag and end_tag)
+  * Tag styles (limited to definable `start_tag` and `end_tag`)
 
 ### Long Term Goals
 
@@ -118,10 +114,7 @@ TODO
 Possible future directions
 --------------------------
 
-I would also like to investigate the potential for an alternative to
-Template6::Parser that generates Raku closures without the use of EVAL. This
-would be far trickier, and would not be compatible with the precompiled
-templates, but would be an interesting exercise nonetheless.
+I would also like to investigate the potential for an alternative to [Template6::Parser](lib/Template6/Parser.rakumod) that generates Raku closures without the use of EVAL. This would be far trickier, and would not be compatible with the precompiled templates, but would be an interesting exercise nonetheless.
 
 AUTHOR
 ======
@@ -135,6 +128,5 @@ Copyright 2012 - 2017 Timothy Totten
 
 Copyright 2018 - 2023 Raku Community
 
-This library is free software; you can redistribute it and/or modify it
-under the Artistic License 2.0.
+This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
 

@@ -1,10 +1,13 @@
 <html>
 <head>
 [% set title = 'Hello World' %]
-<title>[% title %]</title>
+[% set longer-title = 'OurPlaneOfExistence' %]
+<title>[% title %] ([% get longer-title %])</title>
 </head>
 <body>
 [% name = title %]
+[% longer-name = longer-title %]
 <h1>[% name %]</h1>
+<p>...or should I say: [% longer-name %]?</p>
 </body>
 </html>

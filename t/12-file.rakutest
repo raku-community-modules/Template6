@@ -7,10 +7,11 @@ my $t6 = Template6.new;
 
 my $wanted = "<html>
 <head>
-<title>Hello World</title>
+<title>Hello World (OurPlaneOfExistence)</title>
 </head>
 <body>
 <h1>Hello World</h1>
+<p>...or should I say: Little Cosmic Rock?</p>
 </body>
 </html>
 ";
@@ -20,10 +21,11 @@ is $t6.process('t/templates/default.tt'.IO, :name<World>), $wanted, 'Processing 
 
 $wanted = "<html>
 <head>
-<title>Hello World</title>
+<title>Hello World (OurPlaneOfExistence)</title>
 </head>
 <body>
 <h1>Hello Universe</h1>
+<p>...or should I say: Little Cosmic Rock?</p>
 </body>
 </html>
 ";
